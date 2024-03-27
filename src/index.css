@@ -5,6 +5,9 @@
 body {
   @apply font-medium;
 }
+#root {
+  @apply overflow-hidden;
+}
 
 .sk-spinner {
   &[data-color="white"] {

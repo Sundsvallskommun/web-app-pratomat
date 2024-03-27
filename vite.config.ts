@@ -13,15 +13,6 @@ export default defineConfig(({ command, mode }) => {
         output: {
           entryFileNames: `assets/servicemodule-${env.VITE_APPLICATION}-[hash].js`,
           assetFileNames: `assets/servicemodule-${env.VITE_APPLICATION}-[hash].[ext]`,
-          // manualChunks: function manualChunks(id) {
-          //   if (id.includes("lucide")) {
-          //     return "lucide";
-          //   } else if (id.includes("sk-web-gui")) {
-          //     return "sk-web-gui";
-          //   } else if (id.includes("lottie")) {
-          //     return "lottie";
-          //   }
-          // },
         },
       },
     },
