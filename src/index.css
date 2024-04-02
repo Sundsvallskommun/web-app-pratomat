@@ -2,11 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+body,
+html {
   @apply font-medium;
+  @apply h-dvh max-h-dvh;
+  @apply bg-bjornstigen-surface-primary;
+  @apply overflow-hidden;
 }
 #root {
   @apply overflow-hidden;
+  @apply h-dvh max-h-dvh;
 }
 
 .sk-spinner {

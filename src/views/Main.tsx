@@ -33,7 +33,7 @@ export const Main: React.FC = () => {
   ];
 
   return (
-    <main className="w-dvw h-dvh bg-bjornstigen-surface-primary text-light-primary">
+    <main className="w-dvw h-dvh max-h-dvh bg-bjornstigen-surface-primary text-light-primary">
       {pages[page]}
     </main>
   );

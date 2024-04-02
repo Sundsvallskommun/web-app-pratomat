@@ -30,19 +30,19 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   };
 
   return (
-    <div className="relative w-dvw h-dvh pb-[10rem] overflow-hidden">
+    <div className="relative w-full h-full max-h-dvh">
+      <button
+        type="button"
+        title="Gå tillbaks till start"
+        className="absolute top-[3rem] left-[3rem] bg-transparent border-1 border-light-primary flex justify-center items-center w-[5.2rem] h-[5.2rem] rounded-full"
+        onClick={() => onPrevPage && onPrevPage()}
+      >
+        <Icon name="arrow-left" className="text-light-secondary" />
+      </button>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-between h-full w-full max-h-full"
+        className="flex flex-col justify-between h-full w-full max-h-full pb-[10rem]"
       >
-        <button
-          type="button"
-          title="Gå tillbaks till start"
-          className="absolute top-[3rem] left-[3rem] bg-transparent border-1 border-light-primary flex justify-center items-center w-[5.2rem] h-[5.2rem] rounded-full"
-          onClick={() => onPrevPage && onPrevPage()}
-        >
-          <Icon name="arrow-left" className="text-light-secondary" />
-        </button>
         <div className="flex flex-col items-center justify-start px-[10rem] pt-[6rem] text-center grow shrink pb-32 overflow-hidden max-h-full">
           <h1
             className="mb-[10rem] text-light-secondary text-[4rem] leading-[4rem] font-display font-extrabold"
@@ -72,11 +72,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
               Använd tangentbord
             </SmallButton>
           </div>
-          <BigButton
-            className="w-[11.8rem] h-[53.5rem]"
-            type="submit"
-            disabled={!done || !text}
-          >
+          <BigButton type="submit" disabled={!done || !text}>
             Se vad vår AI säger
           </BigButton>
         </footer>
