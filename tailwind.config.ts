@@ -20,11 +20,12 @@ export default {
       fontWeight: {
         DEFAULT: "500",
       },
-      fontSize: {
-        base: "2rem",
-      },
       lineHeight: {
         base: "130%",
+      },
+      boxShadow: {
+        upper: `0 -1rem 1.2rem 0.5rem var(--tw-shadow-colored),
+                0 -0.2rem 0.2rem 0.2rem var(--tw-shadow-colored)`,
       },
       keyframes: {
         blink: {

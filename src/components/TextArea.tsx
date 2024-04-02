@@ -43,7 +43,7 @@ export const TextArea = forwardRef<
   return (
     <>
       <p
-        className="font-display text-[4rem] text-light-primary hyphens-auto leading-[100%]"
+        className="font-display text-large sm:text-[3rem] md:text-[4rem] text-light-primary hyphens-auto leading-[100%]"
         onClick={() => setInputFocus()}
       >
         {isEditing ? (

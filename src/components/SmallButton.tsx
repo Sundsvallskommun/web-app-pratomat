@@ -9,7 +9,7 @@ export const SmallButton = forwardRef<
       ref={ref}
       type="button"
       {...props}
-      className="w-fit bg-transparent text-light-primary rounded-[0.8rem] border-1 border-light-primary font-header font-medium px-12 py-16"
+      className="w-fit bg-transparent text-light-primary rounded-[0.8rem] border-1 border-light-primary font-header font-medium px-8 py-10 sm:px-12 sm:py-16"
     />
   );
 });

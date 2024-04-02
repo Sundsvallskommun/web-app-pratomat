@@ -12,6 +12,7 @@ html {
 #root {
   @apply overflow-hidden;
   @apply h-dvh max-h-dvh;
+  @apply text-[1.6rem] md:text-[2rem];
 }
 
 .sk-spinner {
