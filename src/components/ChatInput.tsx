@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useMediaQuery } from "usehooks-ts";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { Waves } from "./Waves";
 
@@ -40,6 +40,12 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
     const { listening, transcript, start, stop, reset, error } =
       useSpeechToText();
 
+    const dictRef = useRef<HTMLElement>(null);
+
+    useOnClickOutside(dictRef, () => {
+      stop();
+    });
+
     useEffect(() => {
       reset();
     }, []);
@@ -64,6 +70,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
 
     const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
       setHasFocus(true);
+      stop();
       onFocus && onFocus(event);
     };
 
@@ -87,9 +94,13 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       <div className={cx("h-48 sm:h-56 md:h-80 relative w-full", className)}>
         {!hasFocus && (
           <span
+            ref={dictRef}
             role="button"
             onClick={() => handleDictation()}
-            className="absolute h-48 sm:h-56 md:h-80 flex items-center left-16 z-10"
+            className={cx(
+              "absolute h-48 sm:h-56 md:h-80 flex items-center left-0 z-10",
+              listening ? "pl-8 pr-8" : "pl-16 pr-16"
+            )}
           >
             {listening ? (
               <Waves animate size={isSm ? 3.2 : 4} />
