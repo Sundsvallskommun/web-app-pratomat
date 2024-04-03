@@ -14,6 +14,7 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
+  const [winHeight, setWinHeight] = useState<number>(window.innerHeight);
   const chatRef = useRef<HTMLDivElement>(null);
   const { history, sendQuery, done } = useChat();
 
@@ -29,7 +30,7 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [history, loading]);
+  }, [history, loading, winHeight]);
 
   useEffect(() => {
     if (!done) {
@@ -45,9 +46,31 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
     }
   }, [done, history]);
 
+  useEffect(() => {
+    //Prevent scrolling when keyboard is visible
+    window.onscroll = function () {
+      window.scrollTo(0, window.innerHeight);
+    };
+
+    //Set the height to get everything in view when keyboard is visible
+    const updateWinHeight = () => {
+      setWinHeight(window.innerHeight);
+    };
+
+    window.addEventListener("scroll", updateWinHeight);
+
+    return () => {
+      window.removeEventListener("scroll", updateWinHeight);
+      window.onscroll = function () {};
+    };
+  }, []);
+
   return (
-    <div className="relative w-full h-full">
-      <div className="flex flex-col gap-12 h-full justify-between">
+    <div className="relative w-full h-full max-h-dvh flex flex-col justify-end items-center touch-none">
+      <div
+        className="flex flex-col gap-12 h-full justify-between touch-none overflow-hidden "
+        style={{ maxHeight: winHeight }}
+      >
         <div className="grow overflow-y-auto pb-[4rem]" ref={chatRef}>
           <ul className="px-[14rem] pt-[8rem] flex flex-col gap-[3rem]">
             <li className="flex gap-20 items-start justify-start">

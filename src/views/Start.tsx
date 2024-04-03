@@ -10,16 +10,15 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
         <h1 className="text-display-2 text-light-secondary font-header font-extrabold">
           Vad skulle göra Sundsvall bättre?
         </h1>
-        <BigButton
-          className="w-[11.8rem] h-[49.1rem]"
-          onClick={() => onNextPage && onNextPage()}
-        >
+        <BigButton onClick={() => onNextPage && onNextPage()}>
           Säg vad du tycker
         </BigButton>
         <p className="text-light-secondary opacity-75 max-w-[30rem]">
           Vi sparar ingen persondata. <br />
           Läs vår{" "}
-          <Link className="text-light-secondary">integritetspolicy.</Link>
+          <Link className="text-light-secondary hover:text-light-secondary">
+            integritetspolicy.
+          </Link>
         </p>
       </div>
       <div className="absolute bottom-0 w-[200%] -ml-[50%] h-[36.7rem] overflow-hidden flex justify-center">
