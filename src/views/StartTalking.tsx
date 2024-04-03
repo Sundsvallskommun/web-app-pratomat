@@ -118,11 +118,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
               Använd tangentbord
             </SmallButton>
           </div>
-          <BigButton
-            type="submit"
-            disabled={!done || !text}
-            onClick={handleSubmit}
-          >
+          <BigButton type="submit" disabled={!done || !text}>
             Se vad vår AI säger
           </BigButton>
         </footer>
