@@ -1,5 +1,5 @@
 import { Icon, useGui } from "@sk-web-gui/react";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { BigButton } from "../components/BigButton";
 import { SmallButton } from "../components/SmallButton";
 import { TextArea } from "../components/TextArea";
@@ -7,6 +7,7 @@ import { Waves } from "../components/Waves";
 import useChat from "../hooks/useChat";
 import { WizardPageProps } from "./Main";
 import { useMediaQuery } from "usehooks-ts";
+import { useSpeechToText } from "../hooks/useSpeechToText";
 
 export const StartTalking: React.FC<WizardPageProps> = ({
   onNextPage,
@@ -16,15 +17,47 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const { theme } = useGui();
   const isMobile = useMediaQuery(`screen and (max-width:${theme.screens.md})`);
+  const [useKeyboard, setUseKeyboard] = useState<boolean>(false);
   const { sendQuery, done } = useChat();
+  const { listening, transcript, start, stop, reset, error } =
+    useSpeechToText();
 
   const setInputFocus = () => {
+    stop();
+    setUseKeyboard(true);
     inputRef.current && inputRef.current.focus();
   };
 
+  const resetText = () => {
+    reset();
+    setText("");
+    if (!useKeyboard && !listening) {
+      start();
+    }
+  };
+
+  const continueTalking = () => {
+    setUseKeyboard(false);
+    setTimeout(() => {
+      start();
+    }, 50);
+  };
+
+  useEffect(() => {
+    setText(transcript);
+  }, [transcript]);
+
+  useEffect(() => {
+    start();
+    return () => {
+      stop();
+      reset();
+    };
+    //eslint-disable-next-line
+  }, []);
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-
     if (text) {
       sendQuery(text);
       onNextPage && onNextPage();
@@ -55,24 +88,31 @@ export const StartTalking: React.FC<WizardPageProps> = ({
             Sundsvall bättre?
           </h1>
           <Waves
+            role="button"
+            onClick={() => continueTalking()}
             size={isMobile ? 7 : 10}
+            animate={!!listening}
             className="mb-16 sm:mb-32 md:mb-64 shrink-0"
           />
-          {/* NOTE: ADD COMPONENT FOR SPEACH TO TEXT HERE: */}
+
           <div className="w-full h-full shrink max-h-[32rem] overflow-hidden flex items-center justify-center">
             <div className="relative w-full min-h-[6rem] max-w-[50rem] max-h-full overflow-y-auto overflow-x-hidden text-center">
-              <TextArea
-                ref={inputRef}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                aria-labelledby="mainlabel"
-              />
+              {error && !useKeyboard ? (
+                <span>{error.message}</span>
+              ) : (
+                <TextArea
+                  ref={inputRef}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  aria-labelledby="mainlabel"
+                />
+              )}
             </div>
           </div>
         </div>
         <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-16 md:pb-32 w-full gap-24 sm:gap-32 md:gap-40">
           <div className="flex flex-col gap-16 items-center">
-            <SmallButton onClick={() => setText("")}>Börja om</SmallButton>
+            <SmallButton onClick={() => resetText()}>Börja om</SmallButton>
             <SmallButton onClick={() => setInputFocus()}>
               Använd tangentbord
             </SmallButton>
