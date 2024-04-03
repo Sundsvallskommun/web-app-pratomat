@@ -2,6 +2,7 @@ import { Button, Icon, cx, Spinner, useGui } from "@sk-web-gui/react";
 import {
   ChangeEvent,
   ComponentPropsWithoutRef,
+  FocusEvent,
   forwardRef,
   useEffect,
   useRef,
@@ -23,6 +24,8 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       buttonDisabled,
       onChange,
       onChangeValue,
+      onFocus,
+      onBlur,
       value: _value,
       placeholder,
       loading,
@@ -57,6 +60,16 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
         reset();
         start();
       }
+    };
+
+    const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
+      setHasFocus(true);
+      onFocus && onFocus(event);
+    };
+
+    const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
+      setHasFocus(false);
+      onBlur && onBlur(event);
     };
 
     useEffect(() => {
@@ -102,8 +115,8 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
           className={cx(
             "font-medium  w-full h-48 sm:h-56 md:h-80 rounded-[0.8rem] bg-background-content opacity-85 focus:opacity-100 pl-[5.9rem] focus:pl-16 pr-[7.3rem] placeholder:text-black/50 text-dark-primary focus-visible:ring ring-ring ring-offset-0"
           )}
-          onFocus={() => setHasFocus(true)}
-          onBlur={() => setHasFocus(false)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
         <div className="absolute flex items-center h-48 sm:h-56 md:h-80 right-16 top-0">
           <Button
