@@ -50,12 +50,14 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   useEffect(() => {
     //Prevent scrolling when keyboard is visible
     window.onscroll = function () {
-      window.scrollTo(0, window.innerHeight);
+      window.scrollTo(0, winHeight);
     };
 
     //Set the height to get everything in view when keyboard is visible
     const updateWinHeight = () => {
-      setWinHeight(window.innerHeight);
+      setTimeout(() => {
+        setWinHeight(window.innerHeight);
+      }, 100);
     };
 
     window.addEventListener("scroll", updateWinHeight);
@@ -67,9 +69,9 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   }, []);
 
   return (
-    <div className="relative w-full h-full max-h-dvh flex flex-col justify-end items-center touch-none">
+    <div className="relative w-full h-full max-h-full flex flex-col justify-end items-center touch-none">
       <div
-        className="flex flex-col h-full justify-between items-center touch-none overflow-hidden max-w-full w-full gap-1 "
+        className="flex flex-col h-full justify-between items-center touch-none overflow-hidden max-w-full w-full gap-1"
         style={{ maxHeight: isWriting ? winHeight : "100%" }}
       >
         <div
