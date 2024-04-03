@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-medium;
+}
+#root {
+  @apply overflow-hidden;
+}
+
+.sk-spinner {
+  &[data-color="white"] {
+    path {
+      @apply stroke-light-secondary;
+    }
+  }
+}
