@@ -72,7 +72,7 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
             setIsEditing(false);
             onBlur && onBlur(e);
           }}
-          className="opacity-0 h-0 w-0"
+          className="opacity-0 h-0 w-full"
           value={value}
           {...rest}
         />
