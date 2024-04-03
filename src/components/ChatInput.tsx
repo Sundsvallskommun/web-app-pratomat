@@ -75,7 +75,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             className="absolute h-48 sm:h-56 md:h-80 flex items-center left-16 z-10"
           >
             {listening ? (
-              <Waves animate size={isSm ? 2.4 : 3.2} className="shadow-lg" />
+              <Waves animate size={isSm ? 3.2 : 4} />
             ) : (
               <Icon
                 disabled={!!error}
@@ -108,7 +108,6 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             size={isSm ? "sm" : "md"}
             iconButton
             disabled={buttonDisabled}
-            className="opacity-45 hover:opacity-100 focus:opacity-100"
             color="bjornstigen"
           >
             {loading ? (

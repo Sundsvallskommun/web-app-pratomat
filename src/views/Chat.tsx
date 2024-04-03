@@ -68,10 +68,13 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   return (
     <div className="relative w-full h-full max-h-dvh flex flex-col justify-end items-center touch-none">
       <div
-        className="flex flex-col h-full justify-between touch-none overflow-hidden max-w-full gap-1"
+        className="flex flex-col h-full justify-between items-center touch-none overflow-hidden max-w-full w-full gap-1 "
         style={{ maxHeight: winHeight }}
       >
-        <div className="grow overflow-y-auto max-w-full" ref={chatRef}>
+        <div
+          className="grow overflow-y-auto max-w-full w-full flex justify-center"
+          ref={chatRef}
+        >
           <ul className="w-full max-w-[84rem] px-32 md:px-[14rem] pt-32 sm:pt-40 md:pt-[8rem] flex flex-col gap-[3rem] pb-16">
             <li className="flex gap-12 md:gap-20 items-start justify-start">
               <div className="w-[4.2rem] text-right block text-light-secondary grow-0 shrink-0">
