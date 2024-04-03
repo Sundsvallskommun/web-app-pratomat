@@ -1,12 +1,12 @@
+import { Spinner } from "@sk-web-gui/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { AssistantAvatar } from "../components/AssistantAvatar";
-import { Input } from "../components/Input";
+import { FinalModal } from "../components/FinalModal";
+import { ChatInput } from "../components/ChatInput";
 import { SmallButton } from "../components/SmallButton";
 import { UserAvatar } from "../components/UserAvatar";
-import { WizardPageProps } from "./Main";
-import { FinalModal } from "../components/FinalModal";
 import useChat from "../hooks/useChat";
-import { Spinner } from "@sk-web-gui/react";
+import { WizardPageProps } from "./Main";
 
 interface ChatProps extends WizardPageProps {}
 
@@ -121,11 +121,13 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
             Avsluta chatten
           </SmallButton>
           <form onSubmit={submit} className="w-full max-w-[50rem]">
-            <Input
+            <ChatInput
               buttonDisabled={!done || !query}
+              loading={!done}
               placeholder="Fortsätt chatta"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChangeValue={setQuery}
+              className="w-full md:w-[50rem]"
             />
           </form>
         </footer>

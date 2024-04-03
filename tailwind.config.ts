@@ -32,6 +32,11 @@ export default {
           "0%, 49%": { opacity: "1" },
           "50%, 100%": { opacity: "0" },
         },
+        stretch: {
+          "0%, 50%, 100%": { transform: "scale(1,1)" },
+          "25%": { transform: "scale(1,1.2)" },
+          "75%": { transform: "scale(1,0.8)" },
+        },
       },
       animation: {
         blink: "blink 1s infinite",
