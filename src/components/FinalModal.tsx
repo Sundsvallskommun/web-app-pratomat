@@ -52,7 +52,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   return (
     <Modal
       hideClosebutton
-      className="bg-[#FEDFE2] w-[61.5rem] h-[62.8rem] pt-[7.3rem] pb-[2.6rem] px-[3.6rem] text-center"
+      className="bg-[#FEDFE2] w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] pt-[7.3rem] pb-[2.6rem] px-[3.6rem] text-center"
       show={open}
     >
       <form onSubmit={handleSubmit}>
@@ -68,7 +68,10 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
             <legend className="text-[1.6rem] font-bold mb-[2.5rem]">
               Jag identifierar mig som
             </legend>
-            <div role="group" className="flex gap-12">
+            <div
+              role="group"
+              className="flex gap-12 justify-center flex-wrap md:flex-nowrap"
+            >
               {Object.keys(genders).map((gender, index) => (
                 <RadioButton
                   key={`${index}-${gender}`}
@@ -86,7 +89,10 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
             <legend className="text-[1.6rem] font-bold mb-[2.5rem]">
               Jag är i åldersgruppen
             </legend>
-            <div role="group" className="flex gap-12">
+            <div
+              role="group"
+              className="flex gap-12 justify-center flex-wrap md:flex-nowrap"
+            >
               {Object.keys(ages).map((age, index) => (
                 <RadioButton
                   key={`${index}-${age}`}

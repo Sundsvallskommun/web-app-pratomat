@@ -71,9 +71,9 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
         className="flex flex-col gap-12 h-full justify-between touch-none overflow-hidden "
         style={{ maxHeight: winHeight }}
       >
-        <div className="grow overflow-y-auto pb-[4rem]" ref={chatRef}>
-          <ul className="px-[14rem] pt-[8rem] flex flex-col gap-[3rem]">
-            <li className="flex gap-20 items-start justify-start">
+        <div className="grow overflow-y-auto" ref={chatRef}>
+          <ul className="px-32 md:px-[14rem] pt-32 sm:pt-40 md:pt-[8rem] flex flex-col gap-[3rem] pb-8">
+            <li className="flex gap-12 md:gap-20 items-start justify-start">
               <div className="w-[4.2rem] text-right block text-light-secondary">
                 <AssistantAvatar />
               </div>
@@ -84,7 +84,7 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
             {history.map((msg, index) => (
               <li
                 key={`msg-${index}`}
-                className="flex gap-20 items-start justify-start"
+                className="flex gap-12 md:gap-20 items-start justify-start"
               >
                 <div className="w-[4.2rem] text-right block">
                   {msg.origin === "assistant" ? (
@@ -102,7 +102,7 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
               </li>
             ))}
             {loading && (
-              <li className="flex gap-20 items-start justify-start">
+              <li className="flex gap-12 md:gap-20 items-start justify-start">
                 <div className="w-[4.2rem] text-right block text-light-secondary">
                   <AssistantAvatar />
                 </div>
@@ -116,17 +116,17 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
             )}
           </ul>
         </div>
-        <footer className="grow-0 shrink-0  pb-[4.4rem] px-[17rem] flex flex-col gap-32 items-center w-full">
+        <footer className="grow-0 shrink-0 pb-24 sm:pb-32 md:pb-[4.4rem] px-32 md:px-[17rem] flex flex-col gap-18 sm:gap-24 md:gap-32 pt-8 sm:pt-16 md:pt-[4rem] items-center w-full shadow-upper shadow-bjornstigen-surface-primary">
           <SmallButton onClick={() => setShowModal(true)}>
             Avsluta chatten
           </SmallButton>
-          <form onSubmit={submit}>
+          <form onSubmit={submit} className="w-full">
             <Input
               buttonDisabled={!done}
               placeholder="Fortsätt chatta"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-[49.4rem]"
+              className="w-full md:w-[50rem]"
             />
           </form>
         </footer>
