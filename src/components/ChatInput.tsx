@@ -37,6 +37,10 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
     const { listening, transcript, start, stop, reset, error } =
       useSpeechToText();
 
+    useEffect(() => {
+      reset();
+    }, []);
+
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
       onChange && onChange(event);

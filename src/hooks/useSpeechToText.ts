@@ -39,13 +39,14 @@ export const useSpeechToText: UseSpeechToText = (
     isMicrophoneAvailable,
   } = useSpeechRecognition({ clearTranscriptOnListen: false });
 
-  const debounceStopListening = useCallback(() => {
+  const debounceStopListening = useCallback(
     debounce(() => {
       if (!continuous) {
         SpeechRecognition.stopListening();
       }
-    }, 4000);
-  }, [continuous]);
+    }, 4000),
+    [continuous]
+  );
 
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) {
@@ -76,7 +77,7 @@ export const useSpeechToText: UseSpeechToText = (
 
   useEffect(() => {
     // NOTE: iOS Safari fix - Does not stopListening even tho continuous is false
-    if (listening) {
+    if (listening && transcript) {
       debounceStopListening();
     }
     //eslint-disable-next-line

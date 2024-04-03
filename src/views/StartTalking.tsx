@@ -97,16 +97,17 @@ export const StartTalking: React.FC<WizardPageProps> = ({
 
           <div className="w-full h-full shrink max-h-[32rem] overflow-hidden flex items-center justify-center">
             <div className="relative w-full min-h-[6rem] max-w-[50rem] max-h-full overflow-y-auto overflow-x-hidden text-center">
-              {error && !useKeyboard ? (
-                <span>{error.message}</span>
-              ) : (
-                <TextArea
-                  ref={inputRef}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  aria-labelledby="mainlabel"
-                />
-              )}
+              <TextArea
+                ref={inputRef}
+                value={text}
+                onFocus={() => {
+                  setUseKeyboard(true);
+                  stop();
+                }}
+                errorMessage={!useKeyboard && error ? error.message : undefined}
+                onChange={(e) => setText(e.target.value)}
+                aria-labelledby="mainlabel"
+              />
             </div>
           </div>
         </div>
@@ -117,7 +118,11 @@ export const StartTalking: React.FC<WizardPageProps> = ({
               Använd tangentbord
             </SmallButton>
           </div>
-          <BigButton type="submit" disabled={!done || !text}>
+          <BigButton
+            type="submit"
+            disabled={!done || !text}
+            onClick={handleSubmit}
+          >
             Se vad vår AI säger
           </BigButton>
         </footer>
