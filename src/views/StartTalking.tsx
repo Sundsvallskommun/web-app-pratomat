@@ -65,7 +65,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full max-h-dvh">
+    <div className="relative w-full h-full max-h-full">
       <button
         type="button"
         title="Gå tillbaks till start"
@@ -78,7 +78,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
         onSubmit={handleSubmit}
         className="flex flex-col justify-between h-full w-full max-h-full pb-32 md:pb-[10rem]"
       >
-        <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[8rem] sm:pt-[6rem] text-center grow shrink pb-32 overflow-hidden max-h-full">
+        <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[6rem] sm:pt-[6rem] text-center grow shrink pb-32 overflow-hidden max-h-full">
           <h1
             className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold"
             id="mainlabel"
@@ -90,28 +90,29 @@ export const StartTalking: React.FC<WizardPageProps> = ({
           <Waves
             role="button"
             onClick={() => continueTalking()}
-            size={isMobile ? 7 : 10}
+            size={isMobile ? 6 : 10}
             animate={!!listening}
-            className="mb-16 sm:mb-32 md:mb-64 shrink-0"
+            className="mb-16 sm:mb-24 md:mb-64 shrink-0"
           />
 
-          <div className="w-full h-full shrink max-h-[32rem] overflow-hidden flex items-center justify-center">
-            <div className="relative w-full min-h-[6rem] max-w-[50rem] max-h-full overflow-y-auto overflow-x-hidden text-center">
-              {error && !useKeyboard ? (
-                <span>{error.message}</span>
-              ) : (
-                <TextArea
-                  ref={inputRef}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  aria-labelledby="mainlabel"
-                />
-              )}
+          <div className="w-full h-full max-h-[32rem] overflow-hidden flex items-center justify-center shrink-0 grow">
+            <div className="relative w-full min-h-[6rem] max-w-[50rem] max-h-full overflow-y-auto overflow-x-hidden text-center shrink-0">
+              <TextArea
+                ref={inputRef}
+                value={text}
+                onFocus={() => {
+                  setUseKeyboard(true);
+                  stop();
+                }}
+                errorMessage={!useKeyboard && error ? error.message : undefined}
+                onChange={(e) => setText(e.target.value)}
+                aria-labelledby="mainlabel"
+              />
             </div>
           </div>
         </div>
-        <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-16 md:pb-32 w-full gap-24 sm:gap-32 md:gap-40">
-          <div className="flex flex-col gap-16 items-center">
+        <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-0 md:pb-32 w-full gap-16 sm:gap-32 md:gap-40">
+          <div className="flex max-md:flex-row max-md:flex-wrap flex-col gap-16 items-center">
             <SmallButton onClick={() => resetText()}>Börja om</SmallButton>
             <SmallButton onClick={() => setInputFocus()}>
               Använd tangentbord

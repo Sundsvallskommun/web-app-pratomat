@@ -15,6 +15,7 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
   const [winHeight, setWinHeight] = useState<number>(window.innerHeight);
+  const [isWriting, setIsWriting] = useState<boolean>(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const { history, sendQuery, done } = useChat();
 
@@ -49,12 +50,14 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   useEffect(() => {
     //Prevent scrolling when keyboard is visible
     window.onscroll = function () {
-      window.scrollTo(0, window.innerHeight);
+      window.scrollTo(0, winHeight);
     };
 
     //Set the height to get everything in view when keyboard is visible
     const updateWinHeight = () => {
-      setWinHeight(window.innerHeight);
+      setTimeout(() => {
+        setWinHeight(window.innerHeight);
+      }, 100);
     };
 
     window.addEventListener("scroll", updateWinHeight);
@@ -66,13 +69,13 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
   }, []);
 
   return (
-    <div className="relative w-full h-full max-h-dvh flex flex-col justify-end items-center touch-none">
+    <div className="relative w-full h-full max-h-full flex flex-col justify-end items-center touch-none">
       <div
-        className="flex flex-col h-full justify-between items-center touch-none overflow-hidden max-w-full w-full gap-1 "
-        style={{ maxHeight: winHeight }}
+        className="flex flex-col h-full justify-between items-center touch-none overflow-hidden max-w-full w-full gap-1"
+        style={{ maxHeight: isWriting ? winHeight : "100%" }}
       >
         <div
-          className="grow overflow-y-auto max-w-full w-full flex justify-center"
+          className="grow overflow-y-auto max-w-full w-full flex justify-center items-start"
           ref={chatRef}
         >
           <ul className="w-full max-w-[84rem] px-32 md:px-[14rem] pt-32 sm:pt-40 md:pt-[8rem] flex flex-col gap-[3rem] pb-16">
@@ -129,6 +132,8 @@ export const Chat: React.FC<ChatProps> = ({ onNextPage }) => {
               loading={!done}
               placeholder="Fortsätt chatta"
               value={query}
+              onFocus={() => setIsWriting(true)}
+              onBlur={() => setIsWriting(false)}
               onChangeValue={setQuery}
               className="w-full md:w-[50rem]"
             />
