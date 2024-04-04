@@ -95,10 +95,14 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
         {!hasFocus && (
           <span
             ref={dictRef}
+            tabIndex={0}
             role="button"
             onClick={() => handleDictation()}
+            onKeyDown={(e) => {
+              e.key === "Enter" && handleDictation();
+            }}
             className={cx(
-              "absolute h-48 sm:h-56 md:h-80 flex items-center left-0 z-10",
+              "absolute h-48 sm:h-56 md:h-80 flex items-center left-0 z-10 group",
               listening ? "pl-8 pr-8" : "pl-16 pr-16"
             )}
           >
@@ -108,9 +112,10 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
               <Icon
                 disabled={!!error}
                 name="mic"
+                rounded
                 size={isSm ? 24 : 32}
                 className={cx(
-                  "text-bjornstigen-surface-primary disabled:opacity-45",
+                  "text-bjornstigen-surface-primary disabled:opacity-45 group-focus-visible:ring ring-ring",
                   listening ? "animate-ping" : ""
                 )}
               />
