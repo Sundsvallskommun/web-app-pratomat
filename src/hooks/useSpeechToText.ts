@@ -1,10 +1,10 @@
 import "regenerator-runtime/runtime";
 
+import debounce from "lodash.debounce";
 import { useCallback, useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import debounce from "lodash.debounce";
 
 interface SpeechToTextError {
   code: "BROWSER_NOT_SUPPORTED" | "MIC_NOT_AVAILABLE";
@@ -17,6 +17,7 @@ interface SpeechToTextData {
   error?: SpeechToTextError;
   start: () => void;
   stop: () => void;
+  toggleListening: () => void;
   reset: () => void;
 }
 
@@ -37,14 +38,52 @@ export const useSpeechToText: UseSpeechToText = (
     resetTranscript,
     browserSupportsSpeechRecognition,
     isMicrophoneAvailable,
-  } = useSpeechRecognition({ clearTranscriptOnListen: false });
+  } = useSpeechRecognition({
+    clearTranscriptOnListen: false,
+  });
+
+  const toggleListening = () => {
+    if (listening) {
+      stop();
+    } else {
+      start();
+    }
+  };
+
+  const handleHotKeys = (event: KeyboardEvent) => {
+    if (event.ctrlKey) {
+      switch (event.key) {
+        case " ": {
+          toggleListening();
+          break;
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keypress", handleHotKeys);
+
+    return () => {
+      document.removeEventListener("keypress", handleHotKeys);
+    };
+  }, []);
 
   const debounceStopListening = useCallback(
     debounce(() => {
       if (!continuous) {
         SpeechRecognition.stopListening();
       }
-    }, 4000),
+    }, 3000),
+    [continuous]
+  );
+
+  const debounceStopWaiting = useCallback(
+    debounce(() => {
+      if (!continuous) {
+        SpeechRecognition.stopListening();
+      }
+    }, 15000),
     [continuous]
   );
 
@@ -67,7 +106,7 @@ export const useSpeechToText: UseSpeechToText = (
   const start = () => {
     SpeechRecognition.startListening({
       language: lang,
-      continuous: continuous,
+      continuous: true,
     });
   };
 
@@ -76,12 +115,22 @@ export const useSpeechToText: UseSpeechToText = (
   };
 
   useEffect(() => {
-    // NOTE: iOS Safari fix - Does not stopListening even tho continuous is false
-    if (listening && transcript) {
-      debounceStopListening();
+    if (listening) {
+      if (transcript) {
+        debounceStopListening();
+      }
+      debounceStopWaiting();
     }
     //eslint-disable-next-line
   }, [transcript, listening]);
 
-  return { transcript, listening, error, start, stop, reset: resetTranscript };
+  return {
+    transcript,
+    listening,
+    error,
+    start,
+    stop,
+    toggleListening,
+    reset: resetTranscript,
+  };
 };

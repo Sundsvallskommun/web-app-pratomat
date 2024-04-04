@@ -1,13 +1,13 @@
 import { Icon, useGui } from "@sk-web-gui/react";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "usehooks-ts";
 import { BigButton } from "../components/BigButton";
 import { SmallButton } from "../components/SmallButton";
 import { TextArea } from "../components/TextArea";
 import { Waves } from "../components/Waves";
 import useChat from "../hooks/useChat";
-import { WizardPageProps } from "./Main";
-import { useMediaQuery } from "usehooks-ts";
 import { useSpeechToText } from "../hooks/useSpeechToText";
+import { WizardPageProps } from "./Main";
 
 export const StartTalking: React.FC<WizardPageProps> = ({
   onNextPage,
@@ -18,8 +18,9 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const { theme } = useGui();
   const isMobile = useMediaQuery(`screen and (max-width:${theme.screens.md})`);
   const [useKeyboard, setUseKeyboard] = useState<boolean>(false);
-  const { sendQuery, done } = useChat();
-  const { listening, transcript, start, stop, reset, error } =
+  const [loading, setLoading] = useState<boolean>(false);
+  const { sendQuery, done, history } = useChat();
+  const { listening, transcript, start, stop, toggleListening, reset, error } =
     useSpeechToText();
 
   const setInputFocus = () => {
@@ -36,11 +37,25 @@ export const StartTalking: React.FC<WizardPageProps> = ({
     }
   };
 
-  const continueTalking = () => {
-    setUseKeyboard(false);
-    setTimeout(() => {
+  const handleClickOnText = (event: MouseEvent<HTMLElement>) => {
+    if (useKeyboard) {
+      setInputFocus();
+    } else {
+      event.preventDefault();
+      event.stopPropagation();
       start();
-    }, 50);
+    }
+  };
+
+  const continueTalking = () => {
+    if (!useKeyboard) {
+      toggleListening();
+    } else {
+      setUseKeyboard(false);
+      setTimeout(() => {
+        start();
+      }, 50);
+    }
   };
 
   useEffect(() => {
@@ -58,11 +73,28 @@ export const StartTalking: React.FC<WizardPageProps> = ({
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    sendToAi();
+  };
+
+  const sendToAi = () => {
     if (text) {
+      setLoading(true);
       sendQuery(text);
-      onNextPage && onNextPage();
     }
   };
+
+  useEffect(() => {
+    if (history.length > 1 && loading) {
+      onNextPage && onNextPage();
+    }
+  }, [history, loading, onNextPage]);
+
+  useEffect(() => {
+    if (!useKeyboard && !listening) {
+      sendToAi();
+    }
+    //eslint-disable-next-line
+  }, [listening, useKeyboard]);
 
   return (
     <div className="relative w-full h-full max-h-full">
@@ -80,45 +112,62 @@ export const StartTalking: React.FC<WizardPageProps> = ({
       >
         <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[6rem] sm:pt-[6rem] text-center grow shrink pb-32 overflow-hidden max-h-full">
           <h1
-            className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold"
+            className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold grow-0"
             id="mainlabel"
           >
             Vad skulle göra
             <br />
             Sundsvall bättre?
           </h1>
-          <Waves
-            role="button"
-            onClick={() => continueTalking()}
-            size={isMobile ? 6 : 10}
-            animate={!!listening}
-            className="mb-16 sm:mb-24 md:mb-64 shrink-0"
-          />
+          <div className="flex justify-center items-center md:h-[6.9rem] h-[4.2rem] shrink-0 grow-0 mb-16 sm:mb-24 md:mb-64">
+            {loading ? (
+              <span className="relative ">
+                <Icon name="more-horizontal" size={isMobile ? 60 : 100}></Icon>
+                <Icon
+                  name="more-horizontal"
+                  size={isMobile ? 60 : 100}
+                  className="absolute animate-ping left-0 top-0"
+                ></Icon>
+              </span>
+            ) : (
+              <Waves
+                role="button"
+                onClick={() => continueTalking()}
+                size={isMobile ? 6 : 10}
+                animate={!!listening}
+              />
+            )}
+          </div>
 
-          <div className="w-full h-full max-h-[32rem] overflow-hidden flex items-center justify-center shrink-0 grow">
+          <div className="w-full  max-h-[32rem] overflow-hidden flex items-center justify-center shrink-0 grow">
             <div className="relative w-full min-h-[6rem] max-w-[50rem] max-h-full overflow-y-auto overflow-x-hidden text-center shrink-0">
               <TextArea
                 ref={inputRef}
                 value={text}
-                onFocus={() => {
-                  setUseKeyboard(true);
-                  stop();
-                }}
+                listening={listening}
+                onClick={handleClickOnText}
                 errorMessage={!useKeyboard && error ? error.message : undefined}
                 onChange={(e) => setText(e.target.value)}
                 aria-labelledby="mainlabel"
+                placeholder={`${
+                  !useKeyboard && !listening
+                    ? "Klicka för att"
+                    : "Väntar på att du ska"
+                } börja ${useKeyboard ? "skriva" : "prata"}`}
               />
             </div>
           </div>
         </div>
         <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-0 md:pb-32 w-full gap-16 sm:gap-32 md:gap-40">
           <div className="flex max-md:flex-row max-md:flex-wrap flex-col gap-16 items-center">
-            <SmallButton onClick={() => resetText()}>Börja om</SmallButton>
-            <SmallButton onClick={() => setInputFocus()}>
+            <SmallButton disabled={loading} onClick={() => resetText()}>
+              Börja om
+            </SmallButton>
+            <SmallButton disabled={loading} onClick={() => setInputFocus()}>
               Använd tangentbord
             </SmallButton>
           </div>
-          <BigButton type="submit" disabled={!done || !text}>
+          <BigButton type="submit" disabled={!done || !text || loading}>
             Se vad vår AI säger
           </BigButton>
         </footer>

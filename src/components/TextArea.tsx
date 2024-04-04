@@ -1,5 +1,6 @@
 import {
   ComponentPropsWithoutRef,
+  MouseEvent,
   forwardRef,
   useEffect,
   useRef,
@@ -8,20 +9,28 @@ import {
 import { useForkRef } from "@sk-web-gui/react";
 import { Cursor } from "./Cursor";
 
-interface TextAreaProps extends ComponentPropsWithoutRef<"input"> {
+interface TextAreaProps
+  extends Omit<ComponentPropsWithoutRef<"input">, "onClick"> {
   errorMessage?: string;
+  listening?: boolean;
+  onClick: (event: MouseEvent<HTMLElement>) => void;
 }
 export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
   (props, ref) => {
-    const { value, onFocus, onBlur, errorMessage, ...rest } = props;
+    const {
+      value,
+      onFocus,
+      onBlur,
+      onClick,
+      errorMessage,
+      listening,
+      placeholder,
+      ...rest
+    } = props;
     const [textBefore, setTextBefore] = useState<string>("");
     const [textAfter, setTextAfter] = useState<string>("");
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement>(null);
-
-    const setInputFocus = () => {
-      inputRef.current && inputRef.current.focus();
-    };
 
     const handleCaret = () => {
       if (inputRef.current) {
@@ -45,24 +54,35 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
       <>
         <p
           className="font-display text-large sm:text-[3rem] md:text-[4rem] text-light-primary hyphens-auto leading-[100%]"
-          onClick={() => setInputFocus()}
+          onClick={(e) => {
+            // setInputFocus();
+            onClick && onClick(e);
+          }}
         >
           {errorMessage ? (
             errorMessage
-          ) : isEditing ? (
-            <>
-              {textBefore}
-              <Cursor />
-              {textAfter}
-            </>
+          ) : isEditing || listening ? (
+            value ? (
+              <>
+                {textBefore}
+                <Cursor />
+                {textAfter}
+              </>
+            ) : (
+              <>
+                <Cursor />
+                <span className="opacity-40">{placeholder}</span>
+              </>
+            )
           ) : value ? (
             value
           ) : (
-            <span className="opacity-40">Väntar på att du ska börja prata</span>
+            <span className="opacity-40">{placeholder}</span>
           )}
         </p>
         <input
           type="text"
+          placeholder={placeholder}
           ref={useForkRef(ref, inputRef)}
           onFocus={(e) => {
             setIsEditing(true);
