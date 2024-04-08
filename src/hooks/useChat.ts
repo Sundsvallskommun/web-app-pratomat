@@ -2,7 +2,7 @@ import {
   EventSourceMessage,
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useAppContext } from "../context/app.context";
 import { useAssistant } from "../context/assistant-context";
 import {
@@ -20,8 +20,7 @@ const MAX_REFERENCE_COUNT = 3;
 function useChat() {
   const stream = import.meta.env.VITE_STREAM_DEFAULT === "true";
   const { assistantId, sessionId, setSessionId, user, hash } = useAppContext();
-  const { history, setHistory, clearHistory } = useAssistant();
-  const [done, setDone] = useState(true);
+  const { history, setHistory, clearHistory, done, setDone } = useAssistant();
 
   const addHistoryEntry = (
     origin: Origin,
@@ -42,6 +41,7 @@ function useChat() {
 
   const streamQuery = useCallback(
     (query: string, assistantId: string, session_id: string, u, h) => {
+      const myController = new AbortController();
       const answerId = crypto.randomUUID();
       const questionId = crypto.randomUUID();
       addHistoryEntry("user", query, questionId);
@@ -62,6 +62,7 @@ function useChat() {
 
       fetchEventSource(url, {
         method: "POST",
+        signal: myController.signal,
         body: JSON.stringify({ body: query }),
         headers: {
           Accept: "text/event-stream",
@@ -73,7 +74,11 @@ function useChat() {
             setHistory((history: ChatHistory) => {
               return [
                 ...history,
-                { origin: "assistant", text: "", id: answerId },
+                {
+                  origin: "assistant",
+                  text: "",
+                  id: answerId,
+                },
               ];
             });
           } else if (
@@ -93,13 +98,13 @@ function useChat() {
         },
         onmessage(event: EventSourceMessage) {
           let parsedData: ResponseData;
+
           try {
             parsedData = JSON.parse(event.data);
           } catch (error) {
             console.error("Error when parsing response as json. Returning.");
             return;
           }
-
           if (!sessionId) {
             _id = parsedData.session_id;
           }
@@ -112,14 +117,21 @@ function useChat() {
               })) || []),
             setHistory((history: ChatHistory) => {
               const newHistory = [...history];
-              const index = newHistory.findIndex(
-                (chat) => chat.id === answerId
-              );
-              newHistory[index] = {
-                origin: "assistant",
-                text: history[index]?.text + parsedData.answer,
-                id: answerId,
-              };
+              const index = history.findIndex((chat) => chat.id === answerId);
+              if (index === -1) {
+                newHistory.push({
+                  origin: "assistant",
+                  text: parsedData.answer,
+                  id: answerId,
+                });
+              } else {
+                newHistory[index] = {
+                  origin: "assistant",
+                  text: history[index]?.text + parsedData.answer,
+                  id: answerId,
+                };
+              }
+
               return newHistory;
             });
         },
@@ -127,27 +139,35 @@ function useChat() {
           if (!sessionId) {
             setSessionId(_id);
           }
+          let answer = "";
           setHistory((history: ChatHistory) => {
             const newHistory = [...history];
             const index = newHistory.findIndex((chat) => chat.id === answerId);
+            answer = history[index].text;
+
             newHistory[index] = {
               origin: history[index].origin,
-              text: history[index].text,
+              text: answer,
               id: answerId,
               references: references.slice(0, MAX_REFERENCE_COUNT),
             };
             return newHistory;
           });
-          setHistory((history: ChatHistory) => {
-            return history;
-          });
           setDone(true);
         },
         onerror(err: unknown) {
           console.error("There was an error from server", err);
+          addHistoryEntry(
+            "system",
+            "Ett fel inträffade, kunde inte kommunicera med assistent.",
+            "0",
+            []
+          );
+          setDone(true);
         },
       });
     },
+
     []
   );
 

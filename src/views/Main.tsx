@@ -29,11 +29,11 @@ export const Main: React.FC = () => {
       onPrevPage={() => setPage(0)}
       onNextPage={() => setPage(2)}
     />,
-    <Chat onNextPage={() => setPage(0)} />,
+    <Chat />,
   ];
 
   return (
-    <main className="w-dvw h-dvh max-h-dvh bg-bjornstigen-surface-primary text-light-primary">
+    <main className="w-dvw h-dvh portrait:max-h-dvh bg-bjornstigen-surface-primary text-light-primary">
       {pages[page]}
     </main>
   );

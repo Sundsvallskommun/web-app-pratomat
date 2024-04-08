@@ -5,7 +5,6 @@ import { RadioButton } from "./RadioButton";
 
 interface FinalModalProps {
   open: boolean;
-  onClose: () => void;
 }
 
 const genders = {
@@ -23,7 +22,7 @@ const ages = {
   "4": "70+",
 };
 
-export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
+export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
   const [pickedAge, setPickedAge] = useState<string>("");
   const [sent, setSent] = useState<boolean>(false);
@@ -45,7 +44,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   useEffect(() => {
     if (done && sent) {
       clearHistory();
-      onClose();
+      window.location.reload();
     }
   });
 
@@ -108,16 +107,16 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
           </fieldset>
           <div className="flex gap-12">
             <Button
-              disabled={!pickedAge || !pickedGender || !done}
+              disabled={!pickedAge || !pickedGender || sent}
               rounded
               type="submit"
             >
-              {done ? "Klar" : <Spinner size={2.4} />}
+              {!sent ? "Klar" : <Spinner size={2.4} />}
             </Button>
             <Button
               variant="tertiary"
               showBackground={false}
-              onClick={() => onClose()}
+              onClick={() => window.location.reload()}
               className="font-normal font-header"
             >
               Hoppa över

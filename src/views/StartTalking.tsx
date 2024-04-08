@@ -1,4 +1,4 @@
-import { Icon, useGui } from "@sk-web-gui/react";
+import { Icon, useGui, Tooltip } from "@sk-web-gui/react";
 import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { BigButton } from "../components/BigButton";
@@ -20,6 +20,11 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const [useKeyboard, setUseKeyboard] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const { sendQuery, done, history } = useChat();
+  const [dicateHover, setDictateHover] = useState<boolean>(false);
+  const [dicateFocus, setDictateFocus] = useState<boolean>(false);
+  const [backHover, setBackHover] = useState<boolean>(false);
+  const [backFocus, setBackFocus] = useState<boolean>(false);
+  const textAreaRef = useRef<HTMLDivElement>(null);
   const { listening, transcript, start, stop, toggleListening, reset, error } =
     useSpeechToText();
 
@@ -84,6 +89,12 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   };
 
   useEffect(() => {
+    if (!useKeyboard) {
+      textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
+    }
+  }, [text, useKeyboard]);
+
+  useEffect(() => {
     if (history.length > 1 && loading) {
       onNextPage && onNextPage();
     }
@@ -97,29 +108,46 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   }, [listening, useKeyboard]);
 
   return (
-    <div className="relative w-full h-full max-h-full">
-      <button
-        type="button"
-        title="Gå tillbaks till start"
-        className="absolute top-[3rem] left-[3rem] bg-transparent border-1 border-light-primary flex justify-center items-center w-40 h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full"
-        onClick={() => onPrevPage && onPrevPage()}
-      >
-        <Icon name="arrow-left" className="text-light-secondary" />
-      </button>
+    <div className="relative w-full h-full portrait:max-h-dvh portrait:overflow-hidden landscape:overflow-auto">
+      <div className="absolute top-[3rem] left-[3rem]">
+        <button
+          type="button"
+          aria-label="Tillbaks till start"
+          className="bg-transparent border-1 border-light-primary flex justify-center items-center w-40 h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary hover:bg-bjornstigen-surface-primary-hover"
+          onClick={() => onPrevPage && onPrevPage()}
+          onFocus={() => setBackFocus(true)}
+          onBlur={() => setBackFocus(false)}
+          onMouseEnter={() => setBackHover(true)}
+          onMouseLeave={() => setBackHover(false)}
+        >
+          <Icon name="arrow-left" className="text-light-secondary" />
+        </button>
+
+        <Tooltip
+          position="right"
+          className="absolute top-0 left-full transition-opacity"
+          style={{
+            opacity: backFocus || backHover ? 1 : 0,
+          }}
+        >
+          Tillbaks till start
+        </Tooltip>
+      </div>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-between h-full w-full max-h-full pb-32 md:pb-[10rem]"
+        className="flex flex-col justify-between h-full w-full pb-32 md:pb-[10rem]"
       >
-        <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[6rem] sm:pt-[6rem] text-center grow shrink pb-32 overflow-hidden max-h-full">
-          <h1
-            className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold grow-0"
+        <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[6rem] text-center grow-0 portrait:shrink landscape:shrink-0 overflow-hidden">
+          <h1 className="sr-only">Pratomaten</h1>
+          <label
+            className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold grow-0 portrait:shrink landscape:shrink-0"
             id="mainlabel"
           >
             Vad skulle göra
             <br />
             Sundsvall bättre?
-          </h1>
-          <div className="flex justify-center items-center md:h-[6.9rem] h-[4.2rem] shrink-0 grow-0 mb-16 sm:mb-24 md:mb-64">
+          </label>
+          <div className="flex justify-center items-center md:h-[6.9rem] h-[4.2rem] portrait:shrink landscape:shrink-0 grow-0 mb-16 sm:mb-24 md:mb-64">
             {loading ? (
               <span className="relative ">
                 <Icon name="more-horizontal" size={isMobile ? 60 : 100}></Icon>
@@ -130,17 +158,39 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 ></Icon>
               </span>
             ) : (
-              <Waves
-                role="button"
-                onClick={() => continueTalking()}
-                size={isMobile ? 6 : 10}
-                animate={!!listening}
-              />
+              <span className="relative text-center">
+                <Waves
+                  role="button"
+                  tabIndex={0}
+                  aria-label={"Diktera"}
+                  aria-pressed={listening}
+                  className="focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary rounded-button-lg"
+                  onClick={() => continueTalking()}
+                  size={isMobile ? 6 : 10}
+                  animate={!!listening}
+                  onFocus={() => setDictateFocus(true)}
+                  onBlur={() => setDictateFocus(false)}
+                  onMouseEnter={() => setDictateHover(true)}
+                  onMouseLeave={() => setDictateHover(false)}
+                />
+                {(dicateFocus || dicateHover) && (
+                  <Tooltip
+                    position="below"
+                    className="absolute top-full left-0 w-full"
+                  >
+                    {listening ? "Dikterar" : "Diktera"}
+                  </Tooltip>
+                )}
+              </span>
             )}
           </div>
-
-          <div className="w-full  max-h-[32rem] overflow-hidden flex items-center justify-center shrink-0 grow">
-            <div className="relative w-full min-h-[6rem] max-w-[50rem] max-h-full overflow-y-auto overflow-x-hidden text-center shrink-0">
+        </div>
+        <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] text-center grow portrait:shrink landscape:shrink-0 pb-32 overflow-hidden">
+          <div className="w-full max-h-[32rem] overflow-hidden flex items-center justify-center shrink grow pt-16">
+            <div
+              className="relative w-full max-h-[32rem] min-h-[6rem] max-w-[50rem] overflow-y-auto overflow-x-hidden text-center h-full"
+              ref={textAreaRef}
+            >
               <TextArea
                 ref={inputRef}
                 value={text}
@@ -149,6 +199,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 errorMessage={!useKeyboard && error ? error.message : undefined}
                 onChange={(e) => setText(e.target.value)}
                 aria-labelledby="mainlabel"
+                tabIndex={useKeyboard ? 0 : -1}
                 placeholder={`${
                   !useKeyboard && !listening
                     ? "Klicka för att"
@@ -157,9 +208,12 @@ export const StartTalking: React.FC<WizardPageProps> = ({
               />
             </div>
           </div>
+          <div className="sr-only" aria-live="polite">
+            {loading && "Skickat. Inväntar svar"}
+          </div>
         </div>
         <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-0 md:pb-32 w-full gap-16 sm:gap-32 md:gap-40">
-          <div className="flex max-md:flex-row max-md:flex-wrap flex-col gap-16 items-center">
+          <div className="flex max-md:flex-row max-md:flex-wrap flex-col gap-16 items-center max-md:justify-center">
             <SmallButton disabled={loading} onClick={() => resetText()}>
               Börja om
             </SmallButton>

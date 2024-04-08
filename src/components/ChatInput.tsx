@@ -1,4 +1,4 @@
-import { Button, Icon, cx, Spinner, useGui } from "@sk-web-gui/react";
+import { Button, Icon, Spinner, Tooltip, cx, useGui } from "@sk-web-gui/react";
 import {
   ChangeEvent,
   ComponentPropsWithoutRef,
@@ -10,7 +10,6 @@ import {
 } from "react";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { useSpeechToText } from "../hooks/useSpeechToText";
-import { Waves } from "./Waves";
 
 interface ChatInputProps extends ComponentPropsWithoutRef<"input"> {
   buttonDisabled?: boolean;
@@ -31,12 +30,15 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       loading,
       ...rest
     } = props;
-    const [hasFocus, setHasFocus] = useState<boolean>(false);
     const { theme } = useGui();
     const isSm = useMediaQuery(`screen and (max-width:${theme.screens.md})`);
     const [value, setValue] = useState<string>("");
     const buttonRef = useRef<HTMLButtonElement>(null);
     const usedValue = _value !== undefined ? _value : value;
+    const [buttonFocus, setButtonFocus] = useState<boolean>(false);
+    const [buttonHover, setButtonHover] = useState<boolean>(false);
+    const [dictateFocus, setDictateFocus] = useState<boolean>(false);
+    const [dictateHover, setDictateHover] = useState<boolean>(false);
     const { listening, transcript, start, stop, reset, error } =
       useSpeechToText();
 
@@ -69,15 +71,19 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
     };
 
     const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
-      setHasFocus(true);
       stop();
       onFocus && onFocus(event);
     };
 
     const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
-      setHasFocus(false);
       onBlur && onBlur(event);
     };
+
+    useEffect(() => {
+      if (buttonDisabled) {
+        setButtonFocus(false);
+      }
+    }, [buttonDisabled]);
 
     useEffect(() => {
       setValue(transcript);
@@ -92,56 +98,81 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
 
     return (
       <div className={cx("h-48 sm:h-56 md:h-80 relative w-full", className)}>
-        {!hasFocus && (
-          <span
-            ref={dictRef}
-            tabIndex={0}
-            role="button"
-            onClick={() => handleDictation()}
-            onKeyDown={(e) => {
-              e.key === "Enter" && handleDictation();
-            }}
-            className={cx(
-              "absolute h-48 sm:h-56 md:h-80 flex items-center left-0 z-10 group",
-              listening ? "pl-8 pr-8" : "pl-16 pr-16"
-            )}
-          >
-            {listening ? (
-              <Waves animate size={isSm ? 3.2 : 4} />
-            ) : (
+        <span
+          ref={dictRef}
+          tabIndex={1}
+          role="button"
+          aria-label="Diktera"
+          aria-disabled={!!error}
+          onClick={() => handleDictation()}
+          onKeyDown={(e) => {
+            e.key === "Enter" && handleDictation();
+          }}
+          aria-pressed={listening}
+          className={cx(
+            "absolute h-48 sm:h-56 md:h-80 flex items-center left-0 z-10 group",
+            "md:px-16 px-8"
+          )}
+          onFocus={() => setDictateFocus(true)}
+          onBlur={() => setDictateFocus(false)}
+          onMouseEnter={() => setDictateHover(true)}
+          onMouseLeave={() => setDictateHover(false)}
+        >
+          {(dictateHover || dictateFocus) && (
+            <Tooltip className="absolute left-full -ml-16" position="right">
+              Diktera
+            </Tooltip>
+          )}
+          <>
+            <Icon
+              name="mic"
+              rounded
+              size={isSm ? 24 : 32}
+              className={cx(
+                "text-bjornstigen-surface-primary group-focus-visible:ring ring-ring"
+              )}
+            />
+            {listening && (
               <Icon
-                disabled={!!error}
                 name="mic"
                 rounded
                 size={isSm ? 24 : 32}
                 className={cx(
-                  "text-bjornstigen-surface-primary disabled:opacity-45 group-focus-visible:ring ring-ring",
-                  listening ? "animate-ping" : ""
+                  " absolute text-bjornstigen-surface-primary group-focus-visible:ring ring-ring",
+                  "animate-ping"
                 )}
               />
             )}
-          </span>
-        )}
+          </>
+        </span>
+
         <input
           ref={ref}
+          tabIndex={1}
           onChange={handleChange}
           placeholder={listening ? "Tala för att fortsätta" : placeholder}
           value={usedValue}
           {...rest}
           className={cx(
-            "font-medium  w-full h-48 sm:h-56 md:h-80 rounded-[0.8rem] bg-background-content opacity-85 focus:opacity-100 pl-[5.9rem] focus:pl-16 pr-[7.3rem] placeholder:text-black/50 text-dark-primary focus-visible:ring ring-ring ring-offset-0"
+            "font-medium  w-full h-48 sm:h-56 md:h-80 rounded-[0.8rem] bg-background-content opacity-85 focus:opacity-100 pl-[4.4rem] md:pl-[5.9rem] pr-[4.8rem] md:pr-[7.3rem] placeholder:text-black/50 text-dark-primary focus-visible:ring ring-ring ring-offset-0"
           )}
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
-        <div className="absolute flex items-center h-48 sm:h-56 md:h-80 right-16 top-0">
+        <div className="absolute flex items-center h-48 sm:h-56 md:h-80 right-8 md:right-16 top-0">
           <Button
             ref={buttonRef}
+            aria-label="Skicka"
+            tabIndex={1}
             type="submit"
             size={isSm ? "sm" : "md"}
             iconButton
             disabled={buttonDisabled}
             color="bjornstigen"
+            onFocus={() => setButtonFocus(true)}
+            onBlur={() => setButtonFocus(false)}
+            onMouseEnter={() => setButtonHover(true)}
+            onMouseLeave={() => setButtonHover(false)}
           >
             {loading ? (
               <Spinner size={isSm ? 3.2 : 4} />
@@ -149,6 +180,11 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
               <Icon name="arrow-up" />
             )}
           </Button>
+          {(buttonFocus || buttonHover) && (
+            <Tooltip className="absolute right-full" position="left">
+              Skicka
+            </Tooltip>
+          )}
         </div>
       </div>
     );
