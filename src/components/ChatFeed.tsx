@@ -50,7 +50,7 @@ export const ChatFeed: React.FC = () => {
           <AssistantAvatar />
         </div>
         <div className="w-full text-left grow">
-          Vad skulle göra Sundsvall bättre?
+          {import.meta.env.VITE_QUESTION}
         </div>
       </li>
 

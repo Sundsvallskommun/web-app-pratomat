@@ -143,9 +143,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
             className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold grow-0 portrait:shrink landscape:shrink-0"
             id="mainlabel"
           >
-            Vad skulle göra
-            <br />
-            Sundsvall bättre?
+            {import.meta.env.VITE_QUESTION}
           </label>
           <div className="flex justify-center items-center md:h-[6.9rem] h-[4.2rem] portrait:shrink landscape:shrink-0 grow-0 mb-16 sm:mb-24 md:mb-64">
             {loading ? (

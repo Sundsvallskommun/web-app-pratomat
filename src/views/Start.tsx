@@ -28,7 +28,7 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
     <div className="relative w-full h-full landscape:overflow-auto">
       <div className="relative flex flex-col gap-[6rem] px-32 md:px-[10rem] pt-[14%] landscape:pt-[8%] pb-64 text-center items-center justify-start z-10">
         <h1 className="text-h3 sm:text-h1 md:text-display-2 text-light-secondary font-header font-extrabold">
-          Vad skulle göra Sundsvall bättre?
+          {import.meta.env.VITE_QUESTION}
         </h1>
         <BigButton onClick={() => onNextPage && onNextPage()}>
           Säg vad du tycker
