@@ -28,7 +28,7 @@ function App() {
     },
   });
   return (
-    <GuiProvider theme={theme}>
+    <GuiProvider theme={theme} colorScheme="light">
       <Suspense fallback="loading">
         <Main />
       </Suspense>
