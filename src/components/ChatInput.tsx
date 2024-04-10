@@ -119,7 +119,10 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
           onMouseLeave={() => setDictateHover(false)}
         >
           {(dictateHover || dictateFocus) && (
-            <Tooltip className="absolute left-full -ml-16" position="right">
+            <Tooltip
+              className="absolute left-full -ml-16 z-10"
+              position="right"
+            >
               Diktera
             </Tooltip>
           )}
@@ -181,7 +184,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             )}
           </Button>
           {(buttonFocus || buttonHover) && (
-            <Tooltip className="absolute right-full" position="left">
+            <Tooltip className="absolute right-full z-10" position="left">
               Skicka
             </Tooltip>
           )}
