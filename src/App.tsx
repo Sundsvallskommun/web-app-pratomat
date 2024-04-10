@@ -28,7 +28,7 @@ function App() {
     },
   });
   return (
-    <GuiProvider theme={theme}>
+    <GuiProvider theme={theme} colorScheme="light">
       <Main />
     </GuiProvider>
   );

@@ -1,7 +1,7 @@
 import { cx } from "@sk-web-gui/react";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, ElementType, HTMLAttributes } from "react";
 
-interface WavesProps extends ComponentPropsWithoutRef<"div"> {
+interface IWavesProps {
   className?: string;
   /**
    * Size (width) in rem
@@ -12,11 +12,43 @@ interface WavesProps extends ComponentPropsWithoutRef<"div"> {
    * If the waves should animate
    */
   animate?: boolean;
+  as?: ElementType;
 }
+
+interface WavesPropsDiv extends ComponentPropsWithoutRef<"div">, IWavesProps {
+  as: "div";
+}
+interface WavesPropsButton
+  extends ComponentPropsWithoutRef<"button">,
+    IWavesProps {
+  as: "button";
+}
+interface WavesPropsOther extends HTMLAttributes<HTMLElement>, IWavesProps {}
+
+type WavesProps = WavesPropsDiv | WavesPropsButton | WavesPropsOther;
+
 export const Waves: React.FC<WavesProps> = (props) => {
-  const { className, size = 91.6, animate, ...rest } = props;
+  const getProps = () => {
+    switch (props.as) {
+      case "div":
+        return props as WavesPropsDiv;
+      case "button":
+        return props as WavesPropsButton;
+      default:
+        return props as WavesPropsOther;
+    }
+  };
+
+  const {
+    className,
+    size = 91.6,
+    animate,
+    as: Comp = "div",
+    ...rest
+  } = getProps();
+
   return (
-    <div
+    <Comp
       {...rest}
       className={cx("flex gap-[2.4%] justify-center items-center", className)}
       style={{ width: `${size}rem`, height: `${size * 0.69}rem` }}
@@ -63,6 +95,6 @@ export const Waves: React.FC<WavesProps> = (props) => {
           animate ? "animate-[stretch_0.7s_infinite]" : ""
         )}
       ></div>
-    </div>
+    </Comp>
   );
 };

@@ -109,11 +109,11 @@ export const StartTalking: React.FC<WizardPageProps> = ({
 
   return (
     <div className="relative w-full h-full portrait:max-h-dvh portrait:overflow-hidden landscape:overflow-auto">
-      <div className="absolute top-[3rem] left-[3rem]">
+      <div className="absolute top-16 left-16 md:top-[3rem] md:left-[3rem]">
         <button
           type="button"
           aria-label="Tillbaks till start"
-          className="bg-transparent border-1 border-light-primary flex justify-center items-center w-40 h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary hover:bg-bjornstigen-surface-primary-hover"
+          className="bg-transparent border-1 border-light-primary flex justify-center items-center w-32 h-32 sm:w-40 sm:h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary hover:bg-bjornstigen-surface-primary-hover"
           onClick={() => onPrevPage && onPrevPage()}
           onFocus={() => setBackFocus(true)}
           onBlur={() => setBackFocus(false)}
@@ -125,7 +125,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
 
         <Tooltip
           position="right"
-          className="absolute top-0 left-full transition-opacity"
+          className="absolute top-0 left-full transition-opacity z-10"
           style={{
             opacity: backFocus || backHover ? 1 : 0,
           }}
@@ -158,7 +158,8 @@ export const StartTalking: React.FC<WizardPageProps> = ({
             ) : (
               <span className="relative text-center">
                 <Waves
-                  role="button"
+                  as="button"
+                  type="button"
                   tabIndex={0}
                   aria-label={"Diktera"}
                   aria-pressed={listening}
@@ -174,7 +175,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 {(dicateFocus || dicateHover) && (
                   <Tooltip
                     position="below"
-                    className="absolute top-full left-0 w-full"
+                    className="absolute top-full left-0 w-full z-10"
                   >
                     {listening ? "Dikterar" : "Diktera"}
                   </Tooltip>

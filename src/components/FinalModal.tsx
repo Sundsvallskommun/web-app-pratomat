@@ -26,27 +26,34 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
   const [pickedAge, setPickedAge] = useState<string>("");
   const [sent, setSent] = useState<boolean>(false);
-  const { sendQuery, done, clearHistory } = useChat();
+  const [recieved, setRecieved] = useState<boolean>(false);
+  const { sendQuery, clearHistory, history } = useChat();
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     //TODO: Handle submit
     const message =
       pickedGender === "noanswer"
-        ? `Jag tillhör åldersgruppen ${ages[pickedAge]}`
+        ? `Jag tillhör åldersgruppen ${ages[pickedAge]} år`
         : `Jag är en ${
             pickedGender === "none" ? "Ickebinär person" : genders[pickedGender]
-          } som tillhör åldersgruppen ${ages[pickedAge]}`;
+          } som tillhör åldersgruppen ${ages[pickedAge]} år`;
     sendQuery(message);
     setSent(true);
   };
 
   useEffect(() => {
-    if (done && sent) {
+    if (sent && history.at(-1).origin === "assistant" && history.at(-1).text) {
+      setRecieved(true);
+    }
+  }, [sent, history]);
+
+  useEffect(() => {
+    if (recieved) {
       clearHistory();
       window.location.reload();
     }
-  });
+  }, [clearHistory, recieved]);
 
   return (
     <Modal

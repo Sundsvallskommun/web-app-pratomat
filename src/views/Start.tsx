@@ -33,6 +33,7 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
         <BigButton onClick={() => onNextPage && onNextPage()}>
           Säg vad du tycker
         </BigButton>
+        {/*         NOTE: Hide until the policies are available.
         <p className="text-light-secondary opacity-85 max-w-[30rem]">
           Vi sparar ingen persondata. <br />
           Läs vår{" "}
@@ -43,7 +44,7 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
           >
             integritetspolicy.
           </button>
-        </p>
+        </p> */}
       </div>
       <div
         className="fixed bottom-0 w-[200%] -ml-[50%] max-h-[31%] overflow-hidden flex justify-center"
