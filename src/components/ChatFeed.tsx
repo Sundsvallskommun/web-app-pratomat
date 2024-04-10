@@ -4,12 +4,14 @@ import useChat from "../hooks/useChat";
 import { AssistantAvatar } from "./AssistantAvatar";
 import { MarkdownRendered } from "./MarkdownRendered";
 import { UserAvatar } from "./UserAvatar";
+import { useTranslation } from "react-i18next";
 
 export const ChatFeed: React.FC = () => {
   const [showLoading, setShowLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const { history, done } = useChat();
   const timeout = useRef(setTimeout(() => {}));
+  const { t } = useTranslation(["chat", "common"]);
 
   useEffect(() => {
     if (!done) {
@@ -69,7 +71,7 @@ export const ChatFeed: React.FC = () => {
           msg.origin === "assistant" &&
           showLoading ? (
             <div className="sr-only" aria-live="polite">
-              Inväntar svar
+              {t("common:waiting_for_answer")}
             </div>
           ) : undefined}
           <div
@@ -82,15 +84,15 @@ export const ChatFeed: React.FC = () => {
           >
             {msg.origin === "assistant" && (
               <strong className="block" aria-hidden="true">
-                Sundsvalls AI
+                {t("common:sundsvalls_ai")}
               </strong>
             )}
             <span className="sr-only">
               {msg.origin === "assistant"
-                ? "Sundsvalls AI: "
+                ? `${t("common:sundsvalls_ai")}: `
                 : msg.origin === "system"
-                ? "Felmeddelande: "
-                : "Du: "}
+                ? `${t("common:error")}: `
+                : `${t("common:you")}: `}
             </span>
             <MarkdownRendered text={msg.text} />
           </div>
@@ -106,7 +108,7 @@ export const ChatFeed: React.FC = () => {
           </div>
           <div className="grow w-full text-left" aria-hidden={true}>
             <span className="flex gap-8 items-center">
-              <strong>Sundsvalls AI</strong>
+              <strong> {t("common:sundsvalls_ai")}</strong>
               <Spinner color="white" size={2} />
             </span>
           </div>

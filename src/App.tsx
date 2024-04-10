@@ -2,7 +2,7 @@ import { GuiProvider, extendTheme } from "@sk-web-gui/react";
 import "./App.css";
 import { Main } from "./views/Main";
 import { useAppContext } from "./context/app.context";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 function App() {
   const { setUser, setHash, setAssistantId } = useAppContext();
@@ -28,8 +28,10 @@ function App() {
     },
   });
   return (
-    <GuiProvider theme={theme} colorScheme="light">
-      <Main />
+    <GuiProvider theme={theme}>
+      <Suspense fallback="loading">
+        <Main />
+      </Suspense>
     </GuiProvider>
   );
 }

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { useSpeechToText } from "../hooks/useSpeechToText";
+import { useTranslation } from "react-i18next";
 
 interface ChatInputProps extends ComponentPropsWithoutRef<"input"> {
   buttonDisabled?: boolean;
@@ -43,6 +44,8 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       useSpeechToText();
 
     const dictRef = useRef<HTMLElement>(null);
+
+    const { t } = useTranslation(["common", "chat"]);
 
     useOnClickOutside(dictRef, () => {
       stop();
@@ -102,7 +105,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
           ref={dictRef}
           tabIndex={1}
           role="button"
-          aria-label="Diktera"
+          aria-label={t("common:listen")}
           aria-disabled={!!error}
           onClick={() => handleDictation()}
           onKeyDown={(e) => {
@@ -120,10 +123,10 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
         >
           {(dictateHover || dictateFocus) && (
             <Tooltip
-              className="absolute left-full -ml-16 z-10"
+              className="absolute left-full -ml-16 capitalize"
               position="right"
             >
-              Diktera
+              {t("common:listen")}
             </Tooltip>
           )}
           <>
@@ -141,7 +144,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
                 rounded
                 size={isSm ? 24 : 32}
                 className={cx(
-                  " absolute text-bjornstigen-surface-primary group-focus-visible:ring ring-ring",
+                  "absolute text-bjornstigen-surface-primary group-focus-visible:ring ring-ring",
                   "animate-ping"
                 )}
               />
@@ -153,7 +156,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
           ref={ref}
           tabIndex={1}
           onChange={handleChange}
-          placeholder={listening ? "Tala för att fortsätta" : placeholder}
+          placeholder={listening ? t("chat:talk_to_continue") : placeholder}
           value={usedValue}
           {...rest}
           className={cx(
@@ -165,7 +168,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
         <div className="absolute flex items-center h-48 sm:h-56 md:h-80 right-8 md:right-16 top-0">
           <Button
             ref={buttonRef}
-            aria-label="Skicka"
+            aria-label={t("common:send")}
             tabIndex={1}
             type="submit"
             size={isSm ? "sm" : "md"}
@@ -184,8 +187,8 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             )}
           </Button>
           {(buttonFocus || buttonHover) && (
-            <Tooltip className="absolute right-full z-10" position="left">
-              Skicka
+            <Tooltip className="absolute right-full capitalize" position="left">
+              {t("common:send")}
             </Tooltip>
           )}
         </div>

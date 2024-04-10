@@ -5,6 +5,7 @@ import { FinalModal } from "../components/FinalModal";
 import { SmallButton } from "../components/SmallButton";
 import useChat from "../hooks/useChat";
 import { WizardPageProps } from "./Main";
+import { useTranslation } from "react-i18next";
 
 interface ChatProps extends WizardPageProps {}
 
@@ -16,6 +17,8 @@ export const Chat: React.FC<ChatProps> = () => {
   const [isWriting, setIsWriting] = useState<boolean>(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const { history, sendQuery, done } = useChat();
+
+  const { t } = useTranslation(["chat", "common"]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -84,13 +87,13 @@ export const Chat: React.FC<ChatProps> = () => {
             aria-haspopup="dialog"
             aria-expanded={showModal}
           >
-            Avsluta chatten
+            {t("chat:exit_chat")}
           </SmallButton>
           <form onSubmit={submit} className="w-full max-w-[50rem]">
             <ChatInput
               buttonDisabled={!done || !query}
               loading={!done}
-              placeholder="Fortsätt chatta"
+              placeholder={t("chat:continue_chat")}
               value={query}
               onFocus={() => setIsWriting(true)}
               onBlur={() => setIsWriting(false)}
