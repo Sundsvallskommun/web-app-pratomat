@@ -163,7 +163,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                   as="button"
                   type="button"
                   tabIndex={0}
-                  aria-label={t("common.listen")}
+                  aria-label={t("common:listen")}
                   aria-pressed={listening}
                   className="focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary rounded-button-lg"
                   onClick={() => continueTalking()}
@@ -179,7 +179,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                     position="below"
                     className="absolute top-full left-0 w-full capitalize z-10"
                   >
-                    {listening ? t("common:listening") : t("common.listen")}
+                    {listening ? t("common:listening") : t("common:listen")}
                   </Tooltip>
                 )}
               </span>
