@@ -14,6 +14,7 @@ interface TextAreaProps
   errorMessage?: string;
   listening?: boolean;
   onClick: (event: MouseEvent<HTMLElement>) => void;
+  value?: string;
 }
 export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
   (props, ref) => {
@@ -55,7 +56,6 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
         <p
           className="font-display text-large sm:text-[3rem] md:text-[4rem] text-light-primary hyphens-auto leading-[100%]"
           onClick={(e) => {
-            // setInputFocus();
             onClick && onClick(e);
           }}
         >
@@ -64,9 +64,9 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
           ) : isEditing || listening ? (
             value ? (
               <>
-                {textBefore}
+                {textBefore.replace(" ", " ")}
                 <Cursor />
-                {textAfter}
+                {textAfter.replace(" ", " ")}
               </>
             ) : (
               <>
@@ -75,7 +75,7 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
               </>
             )
           ) : value ? (
-            value
+            value.replace(" ", " ")
           ) : (
             <span className="opacity-40">{placeholder}</span>
           )}

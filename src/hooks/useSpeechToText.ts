@@ -81,10 +81,10 @@ export const useSpeechToText: UseSpeechToText = (
   const debounceStopWaiting = useCallback(
     debounce(() => {
       if (!continuous) {
-        SpeechRecognition.stopListening();
+        debounceStopListening();
       }
-    }, 15000),
-    [continuous]
+    }, 10000),
+    [continuous, transcript]
   );
 
   useEffect(() => {
