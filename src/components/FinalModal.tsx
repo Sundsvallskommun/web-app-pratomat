@@ -16,7 +16,6 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
   const [pickedAge, setPickedAge] = useState<string>("");
   const [sent, setSent] = useState<boolean>(false);
-  const { sendQuery, done, clearHistory } = useChat();
   const { t } = useTranslation(["common", "final"]);
   const [recieved, setRecieved] = useState<boolean>(false);
   const { sendQuery, clearHistory, history } = useChat();

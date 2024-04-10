@@ -123,7 +123,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
         >
           {(dictateHover || dictateFocus) && (
             <Tooltip
-              className="absolute left-full -ml-16 capitalize"
+              className="absolute left-full -ml-16 capitalize z-10"
               position="right"
             >
               {t("common:listen")}
@@ -187,7 +187,10 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             )}
           </Button>
           {(buttonFocus || buttonHover) && (
-            <Tooltip className="absolute right-full capitalize" position="left">
+            <Tooltip
+              className="absolute right-full capitalize z-10"
+              position="left"
+            >
               {t("common:send")}
             </Tooltip>
           )}

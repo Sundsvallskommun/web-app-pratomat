@@ -177,7 +177,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 {(dicateFocus || dicateHover) && (
                   <Tooltip
                     position="below"
-                    className="absolute top-full left-0 w-full capitalize"
+                    className="absolute top-full left-0 w-full capitalize z-10"
                   >
                     {listening ? t("common:listening") : t("common.listen")}
                   </Tooltip>
