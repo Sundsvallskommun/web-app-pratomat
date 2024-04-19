@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { BigButton } from "../components/BigButton";
 import { Waves } from "../components/Waves";
 import { WizardPageProps } from "./Main";
+import { useTranslation } from "react-i18next";
 
 export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
   const [winWidth, setWinWidth] = useState<number>(window.innerWidth);
+  const { t } = useTranslation("start");
 
   useEffect(() => {
     const updateWidth = () => {
@@ -31,18 +33,18 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
           {import.meta.env.VITE_QUESTION}
         </h1>
         <BigButton onClick={() => onNextPage && onNextPage()}>
-          Säg vad du tycker
+          {t("button")}
         </BigButton>
         {/*         NOTE: Hide until the policies are available.
         <p className="text-light-secondary opacity-85 max-w-[30rem]">
-          Vi sparar ingen persondata. <br />
-          Läs vår{" "}
+          {t("dont_save_info")} <br />
+          {t("read_our")}{" "}
           <button
             type="button"
             aria-haspopup="true"
             className="text-light-secondary underline focus-visible:ring ring-ring rounded-utility focus-visible:text-dark-primary focus-visible:bg-background-content"
           >
-            integritetspolicy.
+            {t("policy")}.
           </button>
         </p> */}
       </div>

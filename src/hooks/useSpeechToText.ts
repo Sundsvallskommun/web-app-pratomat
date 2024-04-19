@@ -78,15 +78,6 @@ export const useSpeechToText: UseSpeechToText = (
     [continuous]
   );
 
-  const debounceStopWaiting = useCallback(
-    debounce(() => {
-      if (!continuous) {
-        debounceStopListening();
-      }
-    }, 10000),
-    [continuous, transcript]
-  );
-
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) {
       setError({
@@ -115,11 +106,8 @@ export const useSpeechToText: UseSpeechToText = (
   };
 
   useEffect(() => {
-    if (listening) {
-      if (transcript) {
-        debounceStopListening();
-      }
-      debounceStopWaiting();
+    if (listening && transcript) {
+      debounceStopListening();
     }
     //eslint-disable-next-line
   }, [transcript, listening]);

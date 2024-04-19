@@ -8,6 +8,7 @@ import { Waves } from "../components/Waves";
 import useChat from "../hooks/useChat";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { WizardPageProps } from "./Main";
+import { useTranslation } from "react-i18next";
 
 export const StartTalking: React.FC<WizardPageProps> = ({
   onNextPage,
@@ -27,6 +28,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const textAreaRef = useRef<HTMLDivElement>(null);
   const { listening, transcript, start, stop, toggleListening, reset, error } =
     useSpeechToText();
+  const { t } = useTranslation(["start_talking", "common"]);
 
   const setInputFocus = () => {
     stop();
@@ -112,8 +114,8 @@ export const StartTalking: React.FC<WizardPageProps> = ({
       <div className="absolute top-16 left-16 md:top-[3rem] md:left-[3rem]">
         <button
           type="button"
-          aria-label="Tillbaks till start"
           className="bg-transparent border-1 border-light-primary flex justify-center items-center w-32 h-32 sm:w-40 sm:h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary hover:bg-bjornstigen-surface-primary-hover"
+          aria-label={t("start_talking:back_to_start")}
           onClick={() => onPrevPage && onPrevPage()}
           onFocus={() => setBackFocus(true)}
           onBlur={() => setBackFocus(false)}
@@ -130,7 +132,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
             opacity: backFocus || backHover ? 1 : 0,
           }}
         >
-          Tillbaks till start
+          {t("start_talking:back_to_start")}
         </Tooltip>
       </div>
       <form
@@ -138,7 +140,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
         className="flex flex-col justify-between h-full w-full pb-32 md:pb-[10rem]"
       >
         <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[6rem] text-center grow-0 portrait:shrink landscape:shrink-0 overflow-hidden">
-          <h1 className="sr-only">Pratomaten</h1>
+          <h1 className="sr-only">{t("common:pratomaten")}</h1>
           <label
             className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold grow-0 portrait:shrink landscape:shrink-0"
             id="mainlabel"
@@ -161,7 +163,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                   as="button"
                   type="button"
                   tabIndex={0}
-                  aria-label={"Diktera"}
+                  aria-label={t("common:listen")}
                   aria-pressed={listening}
                   className="focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary rounded-button-lg"
                   onClick={() => continueTalking()}
@@ -175,9 +177,9 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 {(dicateFocus || dicateHover) && (
                   <Tooltip
                     position="below"
-                    className="absolute top-full left-0 w-full z-10"
+                    className="absolute top-full left-0 w-full capitalize z-10"
                   >
-                    {listening ? "Dikterar" : "Diktera"}
+                    {listening ? t("common:listening") : t("common:listen")}
                   </Tooltip>
                 )}
               </span>
@@ -199,29 +201,38 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 onChange={(e) => setText(e.target.value)}
                 aria-labelledby="mainlabel"
                 tabIndex={useKeyboard ? 0 : -1}
-                placeholder={`${
+                placeholder={
                   !useKeyboard && !listening
-                    ? "Klicka för att"
-                    : "Väntar på att du ska"
-                } börja ${useKeyboard ? "skriva" : "prata"}`}
+                    ? t("start_talking:click_to", {
+                        action: useKeyboard
+                          ? t("common:write")
+                          : t("common:talk"),
+                      })
+                    : t("start_talking:waiting_for", {
+                        action: useKeyboard
+                          ? t("common:write")
+                          : t("common:talk"),
+                      })
+                }
               />
             </div>
           </div>
           <div className="sr-only" aria-live="polite">
-            {loading && "Skickat. Inväntar svar"}
+            {loading &&
+              `${t("common:sent")}. ${t("common:waiting_for_answer")}`}
           </div>
         </div>
         <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-0 md:pb-32 w-full gap-16 sm:gap-32 md:gap-40">
           <div className="flex max-md:flex-row max-md:flex-wrap flex-col gap-16 items-center max-md:justify-center">
             <SmallButton disabled={loading} onClick={() => resetText()}>
-              Börja om
+              {t("start_talking:restart")}
             </SmallButton>
             <SmallButton disabled={loading} onClick={() => setInputFocus()}>
-              Använd tangentbord
+              {t("start_talking:use_keyboard")}
             </SmallButton>
           </div>
           <BigButton type="submit" disabled={!done || !text || loading}>
-            Se vad vår AI säger
+            {t("start_talking:submit")}
           </BigButton>
         </footer>
       </form>
