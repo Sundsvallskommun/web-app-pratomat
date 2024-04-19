@@ -1,4 +1,12 @@
-import { Button, Icon, Spinner, Tooltip, cx, useGui } from "@sk-web-gui/react";
+import {
+  Button,
+  Icon,
+  Spinner,
+  Tooltip,
+  cx,
+  useGui,
+  useForkRef,
+} from "@sk-web-gui/react";
 import {
   ChangeEvent,
   ComponentPropsWithoutRef,
@@ -12,12 +20,12 @@ import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { useTranslation } from "react-i18next";
 
-interface ChatInputProps extends ComponentPropsWithoutRef<"input"> {
+interface ChatInputProps extends ComponentPropsWithoutRef<"textarea"> {
   buttonDisabled?: boolean;
   onChangeValue?: (value: string) => void;
   loading?: boolean;
 }
-export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
+export const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
   (props, ref) => {
     const {
       className,
@@ -36,15 +44,13 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
     const [value, setValue] = useState<string>("");
     const buttonRef = useRef<HTMLButtonElement>(null);
     const usedValue = _value !== undefined ? _value : value;
-    const [buttonFocus, setButtonFocus] = useState<boolean>(false);
     const [buttonHover, setButtonHover] = useState<boolean>(false);
-    const [dictateFocus, setDictateFocus] = useState<boolean>(false);
     const [dictateHover, setDictateHover] = useState<boolean>(false);
     const { listening, transcript, start, stop, reset, error } =
       useSpeechToText();
 
     const dictRef = useRef<HTMLElement>(null);
-
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { t } = useTranslation(["common", "chat"]);
 
     useOnClickOutside(dictRef, () => {
@@ -55,7 +61,7 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       reset();
     }, []);
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
       setValue(event.target.value);
       onChange && onChange(event);
     };
@@ -73,20 +79,14 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       }
     };
 
-    const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
+    const handleFocus = (event: FocusEvent<HTMLTextAreaElement>) => {
       stop();
       onFocus && onFocus(event);
     };
 
-    const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
+    const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
       onBlur && onBlur(event);
     };
-
-    useEffect(() => {
-      if (buttonDisabled) {
-        setButtonFocus(false);
-      }
-    }, [buttonDisabled]);
 
     useEffect(() => {
       setValue(transcript);
@@ -98,6 +98,12 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
       }
       //eslint-disable-next-line
     }, [listening]);
+
+    useEffect(() => {
+      if (textareaRef.current) {
+        textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+      }
+    }, [value]);
 
     return (
       <div className={cx("h-48 sm:h-56 md:h-80 relative w-full", className)}>
@@ -116,15 +122,15 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             "absolute h-48 sm:h-56 md:h-80 flex items-center left-0 z-10 group",
             "md:px-16 px-8"
           )}
-          onFocus={() => setDictateFocus(true)}
-          onBlur={() => setDictateFocus(false)}
+          onFocus={() => setDictateHover(true)}
+          onBlur={() => setDictateHover(false)}
           onMouseEnter={() => setDictateHover(true)}
           onMouseLeave={() => setDictateHover(false)}
         >
-          {(dictateHover || dictateFocus) && (
+          {dictateHover && (
             <Tooltip
-              className="absolute left-full -ml-16 capitalize z-10"
-              position="right"
+              className="absolute bottom-full -ml-24 -mb-24 capitalize z-10"
+              position="above"
             >
               {t("common:listen")}
             </Tooltip>
@@ -151,20 +157,25 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             )}
           </>
         </span>
-
-        <input
-          ref={ref}
-          tabIndex={1}
-          onChange={handleChange}
-          placeholder={listening ? t("chat:talk_to_continue") : placeholder}
-          value={usedValue}
-          {...rest}
+        <div
           className={cx(
-            "font-medium  w-full h-48 sm:h-56 md:h-80 rounded-[0.8rem] bg-background-content opacity-85 focus:opacity-100 pl-[4.4rem] md:pl-[5.9rem] pr-[4.8rem] md:pr-[7.3rem] placeholder:text-black/50 text-dark-primary focus-visible:ring ring-ring ring-offset-0"
+            "font-medium w-full h-48 sm:h-56 md:h-80 rounded-[0.8rem] bg-background-content opacity-85 focus-within:opacity-100 focus-within:ring ring-ring ring-offset-0 overflow-hidden"
           )}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-        />
+        >
+          <textarea
+            ref={useForkRef(ref, textareaRef)}
+            tabIndex={1}
+            onChange={handleChange}
+            placeholder={listening ? t("chat:talk_to_continue") : placeholder}
+            value={usedValue}
+            {...rest}
+            className={cx(
+              "font-medium resize-none pt-[2.6rem] pb-16 placeholder:text-black/50 text-dark-primary w-full h-full bg-transparent pl-[4.4rem] md:pl-[5.9rem] pr-[4.8rem] md:pr-[7.3rem]"
+            )}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+        </div>
         <div className="absolute flex items-center h-48 sm:h-56 md:h-80 right-8 md:right-16 top-0">
           <Button
             ref={buttonRef}
@@ -175,8 +186,8 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             iconButton
             disabled={buttonDisabled}
             color="bjornstigen"
-            onFocus={() => setButtonFocus(true)}
-            onBlur={() => setButtonFocus(false)}
+            onFocus={() => setButtonHover(true)}
+            onBlur={() => setButtonHover(false)}
             onMouseEnter={() => setButtonHover(true)}
             onMouseLeave={() => setButtonHover(false)}
           >
@@ -186,10 +197,10 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
               <Icon name="arrow-up" />
             )}
           </Button>
-          {(buttonFocus || buttonHover) && (
+          {buttonHover && (
             <Tooltip
-              className="absolute right-full capitalize z-10"
-              position="left"
+              className="absolute bottom-full -mb-24 -ml-18 capitalize z-10"
+              position="above"
             >
               {t("common:send")}
             </Tooltip>
