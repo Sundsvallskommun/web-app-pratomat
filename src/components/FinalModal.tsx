@@ -1,6 +1,6 @@
 import { Button, Modal, Spinner } from "@sk-web-gui/react";
 import { FormEvent, useEffect, useState } from "react";
-import useChat from "../hooks/useChat";
+import { useChat } from "@sk-web-gui/ai";
 import { RadioButton } from "./RadioButton";
 import { useTranslation } from "react-i18next";
 

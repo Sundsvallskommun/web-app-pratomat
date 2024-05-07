@@ -5,7 +5,7 @@ import { BigButton } from "../components/BigButton";
 import { SmallButton } from "../components/SmallButton";
 import { TextArea } from "../components/TextArea";
 import { Waves } from "../components/Waves";
-import useChat from "../hooks/useChat";
+import { useChat } from "@sk-web-gui/ai";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { WizardPageProps } from "./Main";
 import { useTranslation } from "react-i18next";

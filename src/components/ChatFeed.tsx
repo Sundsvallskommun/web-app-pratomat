@@ -1,6 +1,6 @@
 import { Spinner } from "@sk-web-gui/react";
 import { useEffect, useRef, useState } from "react";
-import useChat from "../hooks/useChat";
+import { useChat } from "@sk-web-gui/ai";
 import { AssistantAvatar } from "./AssistantAvatar";
 import { MarkdownRendered } from "./MarkdownRendered";
 import { UserAvatar } from "./UserAvatar";

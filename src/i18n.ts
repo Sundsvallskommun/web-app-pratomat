@@ -10,8 +10,8 @@ i18n
       loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
     defaultNS: "common",
-    lng: "sv-SE",
-    fallbackLng: "sv-SE",
+    lng: "sv",
+    fallbackLng: "sv",
     debug: true,
 
     interpolation: {

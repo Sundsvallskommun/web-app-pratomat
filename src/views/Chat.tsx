@@ -3,7 +3,7 @@ import { ChatFeed } from "../components/ChatFeed";
 import { ChatInput } from "../components/ChatInput";
 import { FinalModal } from "../components/FinalModal";
 import { SmallButton } from "../components/SmallButton";
-import useChat from "../hooks/useChat";
+import { useChat } from "@sk-web-gui/ai";
 import { WizardPageProps } from "./Main";
 import { useTranslation } from "react-i18next";
 
