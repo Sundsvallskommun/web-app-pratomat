@@ -1,13 +1,11 @@
+import * as speechsdk from "microsoft-cognitiveservices-speech-sdk";
+import { ResultReason } from "microsoft-cognitiveservices-speech-sdk";
+import { useEffect, useState } from "react";
 import "regenerator-runtime/runtime";
+import { getAzureToken } from "../services/azure-service";
 
-import debounce from "lodash.debounce";
-import { useCallback, useEffect, useState } from "react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
-
-interface SpeechToTextError {
-  code: "BROWSER_NOT_SUPPORTED" | "MIC_NOT_AVAILABLE";
+export interface SpeechToTextError {
+  code: "BROWSER_NOT_SUPPORTED" | "MIC_NOT_AVAILABLE" | "UNKOWN";
   message: string;
 }
 
@@ -19,6 +17,7 @@ interface SpeechToTextData {
   stop: () => void;
   toggleListening: () => void;
   reset: () => void;
+  done: boolean;
 }
 
 type UseSpeechToText = (
@@ -30,17 +29,108 @@ export const useSpeechToText: UseSpeechToText = (
   continuous = false,
   lang = "sv-SE"
 ) => {
+  const [delayedStart, setDelayedstart] = useState<boolean>(false);
   const [error, setError] = useState<SpeechToTextError | undefined>(undefined);
+  const [transcripts, setTranscripts] = useState<string[]>([""]);
+  const [recognizer, setRecognizer] = useState({ r: undefined });
+  const [done, setDone] = useState<boolean>(false);
+  const [listening, setListening] = useState(false);
 
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-    isMicrophoneAvailable,
-  } = useSpeechRecognition({
-    clearTranscriptOnListen: false,
-  });
+  const transcript = transcripts.join(" ");
+
+  const startStt = async () => {
+    const tokenObj = await getAzureToken();
+    const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
+      tokenObj.authToken,
+      tokenObj.region
+    );
+    speechConfig.speechRecognitionLanguage = lang;
+
+    const audioConfig = speechsdk.AudioConfig.fromDefaultMicrophoneInput();
+    const myRecognizer = new speechsdk.SpeechRecognizer(
+      speechConfig,
+      audioConfig
+    );
+    myRecognizer.recognizing = (sender, event) => {
+      if (event.result.errorDetails) {
+        setError({ code: "UNKOWN", message: event.result.errorDetails });
+      }
+      if (
+        event.result.text &&
+        event.result.reason === ResultReason.RecognizingSpeech
+      ) {
+        setTranscripts((transcripts) => {
+          const newTranscripts = [...transcripts];
+          newTranscripts[transcripts.length - 1] = event.result.text;
+          return newTranscripts;
+        });
+      }
+      sender.speechEndDetected = () => {
+        if (!continuous) {
+          setDone(true);
+        }
+      };
+    };
+
+    myRecognizer.recognized = (sender, event) => {
+      if (
+        event.result.text &&
+        event.result.reason === ResultReason.RecognizedSpeech
+      ) {
+        setTranscripts((transcripts) => {
+          const newTranscripts = [...transcripts];
+          newTranscripts[transcripts.length - 1] = event.result.text;
+          if (continuous) {
+            newTranscripts.push("");
+          }
+          return newTranscripts;
+        });
+      }
+
+      sender.sessionStopped = () => {
+        setListening(false);
+      };
+    };
+
+    setRecognizer((recognizer) => {
+      recognizer.r = myRecognizer;
+      return recognizer;
+    });
+  };
+
+  useEffect(() => {
+    startStt();
+  }, []);
+
+  const start = async () => {
+    if (recognizer.r && !listening) {
+      if (continuous) {
+        recognizer.r.startContinuousRecognitionAsync();
+      } else {
+        recognizer.r.recognizeOnceAsync();
+      }
+      setListening(true);
+      setDelayedstart(false);
+    } else {
+      setDelayedstart(true);
+    }
+  };
+
+  const stop = () => {
+    if (listening && recognizer.r) {
+      if (continuous) {
+        recognizer.r.stopContinuousRecognitionAsync();
+        setDone(false);
+        setListening(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (recognizer.r && delayedStart) {
+      start();
+    }
+  }, [recognizer.r, delayedStart]);
 
   const toggleListening = () => {
     if (listening) {
@@ -50,67 +140,9 @@ export const useSpeechToText: UseSpeechToText = (
     }
   };
 
-  const handleHotKeys = (event: KeyboardEvent) => {
-    if (event.ctrlKey) {
-      switch (event.key) {
-        case " ": {
-          toggleListening();
-          break;
-        }
-      }
-    }
+  const resetTranscript = () => {
+    setTranscripts([""]);
   };
-
-  useEffect(() => {
-    document.addEventListener("keypress", handleHotKeys);
-
-    return () => {
-      document.removeEventListener("keypress", handleHotKeys);
-    };
-  }, []);
-
-  const debounceStopListening = useCallback(
-    debounce(() => {
-      if (!continuous) {
-        SpeechRecognition.stopListening();
-      }
-    }, 3000),
-    [continuous]
-  );
-
-  useEffect(() => {
-    if (!browserSupportsSpeechRecognition) {
-      setError({
-        code: "BROWSER_NOT_SUPPORTED",
-        message: "Din webbläsare stöder inte speech recognition.",
-      });
-    } else if (!isMicrophoneAvailable) {
-      setError({
-        code: "MIC_NOT_AVAILABLE",
-        message: "Du måste tillåta att webbsidan använder din mikrofon.",
-      });
-    } else {
-      setError(undefined);
-    }
-  }, [browserSupportsSpeechRecognition, isMicrophoneAvailable]);
-
-  const start = () => {
-    SpeechRecognition.startListening({
-      language: lang,
-      continuous: true,
-    });
-  };
-
-  const stop = () => {
-    SpeechRecognition.stopListening();
-  };
-
-  useEffect(() => {
-    if (listening && transcript) {
-      debounceStopListening();
-    }
-    //eslint-disable-next-line
-  }, [transcript, listening]);
 
   return {
     transcript,
@@ -120,5 +152,6 @@ export const useSpeechToText: UseSpeechToText = (
     stop,
     toggleListening,
     reset: resetTranscript,
+    done,
   };
 };

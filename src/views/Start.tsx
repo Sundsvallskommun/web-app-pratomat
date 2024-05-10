@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
   const [winWidth, setWinWidth] = useState<number>(window.innerWidth);
   const { t } = useTranslation("start");
-
   useEffect(() => {
     const updateWidth = () => {
       setWinWidth(window.innerWidth);

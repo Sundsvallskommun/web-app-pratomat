@@ -26,8 +26,16 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const [backHover, setBackHover] = useState<boolean>(false);
   const [backFocus, setBackFocus] = useState<boolean>(false);
   const textAreaRef = useRef<HTMLDivElement>(null);
-  const { listening, transcript, start, stop, toggleListening, reset, error } =
-    useSpeechToText();
+  const {
+    listening,
+    transcript,
+    start,
+    stop,
+    toggleListening,
+    reset,
+    error,
+    done: sttDone,
+  } = useSpeechToText(true);
   const { t } = useTranslation(["start_talking", "common"]);
 
   const setInputFocus = () => {
@@ -80,6 +88,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    stop();
     sendToAi();
   };
 
@@ -103,11 +112,11 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   }, [history, loading, onNextPage]);
 
   useEffect(() => {
-    if (!useKeyboard && !listening) {
+    if (!useKeyboard && !listening && sttDone) {
       sendToAi();
     }
     //eslint-disable-next-line
-  }, [listening, useKeyboard]);
+  }, [listening, useKeyboard, sttDone]);
 
   return (
     <div className="relative w-full h-full portrait:max-h-dvh portrait:overflow-hidden landscape:overflow-auto">

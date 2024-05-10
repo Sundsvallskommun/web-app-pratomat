@@ -13,6 +13,8 @@ export interface AppContextInterface {
   setAssistantId: (s: string) => void;
   sessionId: string;
   setSessionId: (s: string) => void;
+  azureSettings?: { region: string; token: string };
+  setAzureSettings: (settings: { region: string; token: string }) => void;
 }
 
 export const AppContext = createContext<AppContextInterface>(null);
@@ -23,6 +25,13 @@ export function AppWrapper({ children }) {
   const [assistant, setAssistant] = useState<AssistantPublic>(null);
   const [assistantId, setAssistantId] = useState<string>(null);
   const [sessionId, setSessionId] = useState<string>(null);
+  const [azureSettings, setAzureSettings] = useState<
+    | {
+        region: string;
+        token: string;
+      }
+    | undefined
+  >(undefined);
 
   return (
     <AppContext.Provider
@@ -37,6 +46,8 @@ export function AppWrapper({ children }) {
         setAssistantId: (s: string) => setAssistantId(s),
         sessionId,
         setSessionId: (s: string) => setSessionId(s),
+        azureSettings,
+        setAzureSettings,
       }}
     >
       <AssistantWrapper>{children}</AssistantWrapper>

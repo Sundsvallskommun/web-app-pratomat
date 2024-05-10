@@ -46,7 +46,7 @@ export const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
     const usedValue = _value !== undefined ? _value : value;
     const [buttonHover, setButtonHover] = useState<boolean>(false);
     const [dictateHover, setDictateHover] = useState<boolean>(false);
-    const { listening, transcript, start, stop, reset, error } =
+    const { listening, transcript, start, stop, reset, error, done } =
       useSpeechToText();
 
     const dictRef = useRef<HTMLElement>(null);
@@ -93,7 +93,7 @@ export const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
     }, [transcript]);
 
     useEffect(() => {
-      if (!listening && value && buttonRef.current) {
+      if (!listening && value && done && buttonRef.current) {
         buttonRef.current.click();
       }
       //eslint-disable-next-line
@@ -104,6 +104,11 @@ export const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
       }
     }, [value]);
+
+    const handleClick = () => {
+      stop();
+      reset();
+    };
 
     return (
       <div className={cx("h-48 sm:h-56 md:h-80 relative w-full", className)}>
@@ -190,6 +195,7 @@ export const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             onBlur={() => setButtonHover(false)}
             onMouseEnter={() => setButtonHover(true)}
             onMouseLeave={() => setButtonHover(false)}
+            onClick={handleClick}
           >
             {loading ? (
               <Spinner size={isSm ? 3.2 : 4} />

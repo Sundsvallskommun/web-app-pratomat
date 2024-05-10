@@ -6,7 +6,6 @@ import { Suspense, useEffect } from "react";
 
 function App() {
   const { setUser, setHash, setAssistantId } = useAppContext();
-
   useEffect(() => {
     const assistantId = import.meta.env.VITE_DEFAULT_ASSISTANT_ID;
     const user = "";
@@ -14,6 +13,12 @@ function App() {
     setUser(user);
     setHash(hash);
     setAssistantId(assistantId);
+
+    // getAzureKey().then((res) => {
+    //   if (res?.region && res?.token) {
+    //     setAzureSettings({ region: res.region, key: res.token });
+    //   }
+    // });
   }, []);
 
   const theme = extendTheme({
