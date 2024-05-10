@@ -10,11 +10,13 @@ interface FinalModalProps {
 
 const genders = ["woman", "man", "none", "noanswer"];
 
-const ages = ["below 20", "20-30", "30-45", "45-70", "above 70"];
+const ages = ["50-60", "60-70", "70-80", "80-90", "above 90"];
+const living = ["alone", "together"];
 
 export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
   const [pickedAge, setPickedAge] = useState<string>("");
+  const [pickedLiving, setPickedLiving] = useState<string>("");
   const [sent, setSent] = useState<boolean>(false);
   const { t } = useTranslation(["common", "final"]);
   const [recieved, setRecieved] = useState<boolean>(false);
@@ -23,13 +25,16 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     //TODO: Handle submit
-    const message =
+    const genderAgeMessage =
       pickedGender === "noanswer"
         ? t("final:message.noanswer", { age: t(`final:age.${pickedAge}`) })
         : t("final:message.other", {
             gender: t(`final:gender.${pickedGender}`, { context: "full" }),
             age: t(`final:age.${pickedAge}`),
           });
+    const message = `${genderAgeMessage}. ${t("final:message.living", {
+      living: t(`final:living.${pickedLiving}`),
+    })}`;
     sendQuery(message);
     setSent(true);
   };
@@ -50,7 +55,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   return (
     <Modal
       hideClosebutton
-      className="bg-[#FEDFE2] w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] pt-[7.3rem] pb-[2.6rem] px-[3.6rem] text-center"
+      className="bg-[#FEDFE2] w-full md:w-[61.5rem] my-16 h-full pt-[7.3rem] pb-[2.6rem] px-[3.6rem] text-center"
       show={open}
     >
       <form onSubmit={handleSubmit}>
@@ -101,9 +106,31 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
               ))}
             </div>
           </fieldset>
+          <fieldset className="flex flex-col gap-[2.5rem] mb-[3.4rem]">
+            <legend className="text-[1.6rem] font-bold mb-[2.5rem]">
+              {t("final:how_do_you_live")}
+            </legend>
+            <div
+              role="group"
+              className="flex gap-12 justify-center flex-wrap md:flex-nowrap"
+            >
+              {living.map((living, index) => (
+                <RadioButton
+                  key={`${index}-${living}`}
+                  value={living}
+                  name="living"
+                  className="capitalize"
+                  checked={living === pickedLiving}
+                  onChange={(e) => setPickedLiving(e.target.value)}
+                >
+                  {t(`final:living.${living}`)}
+                </RadioButton>
+              ))}
+            </div>
+          </fieldset>
           <div className="flex gap-12">
             <Button
-              disabled={!pickedAge || !pickedGender || sent}
+              disabled={!pickedAge || !pickedGender || !pickedLiving || sent}
               rounded
               type="submit"
               className="capitalize"

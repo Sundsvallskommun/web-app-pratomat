@@ -7,11 +7,11 @@ i18n
   .use(Backend)
   .init({
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json",
+      loadPath: `${import.meta.env.BASE_URL || "/"}locales/{{lng}}/{{ns}}.json`,
     },
     defaultNS: "common",
-    lng: "sv-SE",
-    fallbackLng: "sv-SE",
+    lng: "sv",
+    fallbackLng: "sv",
     debug: true,
 
     interpolation: {
