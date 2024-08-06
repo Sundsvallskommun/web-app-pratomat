@@ -1,8 +1,17 @@
 {
   "back_to_start": "Tillbaks till start",
   "restart": "Börja om",
-  "use_keyboard": "Använd tangentbord",
-  "submit": "Se vad vår AI säger",
-  "click_to": "Klicka för att börja {{action}}",
-  "waiting_for": "Väntar på att du ska börja {{action}}"
+  "submit": "Skicka svar",
+  "error": {
+    "no_text": {
+      "keyboard": {
+        "title": "Det verkar inte som att du har skrivit något än.",
+        "description": "Du måste skriv något innan du kan skicka det"
+      },
+      "microphone": {
+        "title": "Det verkar inte som att du har sagt något än.",
+        "description": "Du måste prata in något svar innan du kan skicka det"
+      }
+    }
+  }
 }

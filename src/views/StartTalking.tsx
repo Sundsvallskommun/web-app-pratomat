@@ -1,8 +1,7 @@
-import { Icon, useGui, Tooltip } from "@sk-web-gui/react";
+import { Icon, useGui, Tooltip, useSnackbar, Button } from "@sk-web-gui/react";
 import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { BigButton } from "../components/BigButton";
-import { SmallButton } from "../components/SmallButton";
 import { TextArea } from "../components/TextArea";
 import { Waves } from "../components/Waves";
 import { useChat } from "@sk-web-gui/ai";
@@ -10,9 +9,14 @@ import { useSpeechToText } from "../hooks/useSpeechToText";
 import { WizardPageProps } from "./Main";
 import { useTranslation } from "react-i18next";
 
-export const StartTalking: React.FC<WizardPageProps> = ({
+interface StartTalkingProps extends WizardPageProps {
+  sessionId: string;
+}
+
+export const StartTalking: React.FC<StartTalkingProps> = ({
   onNextPage,
   onPrevPage,
+  sessionId,
 }) => {
   const [text, setText] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +24,7 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const isMobile = useMediaQuery(`screen and (max-width:${theme.screens.md})`);
   const [useKeyboard, setUseKeyboard] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const { sendQuery, done, history } = useChat();
+  const { sendQuery, done, history } = useChat({ sessionId });
   const [dicateHover, setDictateHover] = useState<boolean>(false);
   const [dicateFocus, setDictateFocus] = useState<boolean>(false);
   const [backHover, setBackHover] = useState<boolean>(false);
@@ -29,6 +33,8 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   const { listening, transcript, start, stop, toggleListening, reset, error } =
     useSpeechToText();
   const { t } = useTranslation(["start_talking", "common"]);
+  const snackbar = useSnackbar();
+  const delayedSubmit = useRef(setTimeout(() => {}, 0));
 
   const setInputFocus = () => {
     stop();
@@ -41,6 +47,9 @@ export const StartTalking: React.FC<WizardPageProps> = ({
     setText("");
     if (!useKeyboard && !listening) {
       start();
+    }
+    if (useKeyboard) {
+      setInputFocus();
     }
   };
 
@@ -87,6 +96,16 @@ export const StartTalking: React.FC<WizardPageProps> = ({
     if (text) {
       setLoading(true);
       sendQuery(text);
+    } else {
+      snackbar({
+        message: useKeyboard
+          ? `${t(`start_talking:error.no_text.keyboard.title`)} ${t(
+              `start_talking:error.no_text.keyboard.description`
+            )}`
+          : `${t(`start_talking:error.no_text.microphone.title`)} ${t(
+              `start_talking:error.no_text.microphone.description`
+            )}`,
+      });
     }
   };
 
@@ -103,9 +122,14 @@ export const StartTalking: React.FC<WizardPageProps> = ({
   }, [history, loading, onNextPage]);
 
   useEffect(() => {
-    if (!useKeyboard && !listening) {
-      sendToAi();
+    if (!useKeyboard && !listening && text) {
+      delayedSubmit.current = setTimeout(() => {
+        sendToAi();
+      }, 500);
+    } else {
+      clearTimeout(delayedSubmit.current);
     }
+
     //eslint-disable-next-line
   }, [listening, useKeyboard]);
 
@@ -150,9 +174,9 @@ export const StartTalking: React.FC<WizardPageProps> = ({
           <div className="flex justify-center items-center md:h-[6.9rem] h-[4.2rem] portrait:shrink landscape:shrink-0 grow-0 mb-16 sm:mb-24 md:mb-64">
             {loading ? (
               <span className="relative ">
-                <Icon name="more-horizontal" size={isMobile ? 60 : 100}></Icon>
+                <Icon name="ellipsis" size={isMobile ? 60 : 100}></Icon>
                 <Icon
-                  name="more-horizontal"
+                  name="ellipsis"
                   size={isMobile ? 60 : 100}
                   className="absolute animate-ping left-0 top-0"
                 ></Icon>
@@ -203,12 +227,12 @@ export const StartTalking: React.FC<WizardPageProps> = ({
                 tabIndex={useKeyboard ? 0 : -1}
                 placeholder={
                   !useKeyboard && !listening
-                    ? t("start_talking:click_to", {
+                    ? t("common:click_to", {
                         action: useKeyboard
                           ? t("common:write")
                           : t("common:talk"),
                       })
-                    : t("start_talking:waiting_for", {
+                    : t("common:waiting_for", {
                         action: useKeyboard
                           ? t("common:write")
                           : t("common:talk"),
@@ -223,17 +247,54 @@ export const StartTalking: React.FC<WizardPageProps> = ({
           </div>
         </div>
         <footer className="grow-0 shrink-0 flex flex-col items-center justify-start text-center pb-0 md:pb-32 w-full gap-16 sm:gap-32 md:gap-40">
-          <div className="flex max-md:flex-row max-md:flex-wrap flex-col gap-16 items-center max-md:justify-center">
-            <SmallButton disabled={loading} onClick={() => resetText()}>
+          {text && (
+            <Button
+              size="lg"
+              variant="secondary"
+              inverted
+              rounded
+              leftIcon={<Icon name="refresh-ccw" />}
+              onClick={resetText}
+            >
               {t("start_talking:restart")}
-            </SmallButton>
-            <SmallButton disabled={loading} onClick={() => setInputFocus()}>
-              {t("start_talking:use_keyboard")}
-            </SmallButton>
-          </div>
-          <BigButton type="submit" disabled={!done || !text || loading}>
+            </Button>
+          )}
+
+          <BigButton type="submit" disabled={!done || loading}>
             {t("start_talking:submit")}
           </BigButton>
+          <div className="flex max-md:flex-row max-md:flex-wrap flex-col md:mt-64 gap-16 items-center max-md:justify-center">
+            <p className="text-h4-md text-light-primary mb-16">
+              {useKeyboard
+                ? t("common:want_to_talk")
+                : t("common:want_to_write")}
+            </p>
+            {!useKeyboard ? (
+              <Button
+                size="lg"
+                variant="secondary"
+                type="button"
+                rounded
+                disabled={loading}
+                onClick={() => setInputFocus()}
+                inverted
+              >
+                {t("common:use_keyboard")}
+              </Button>
+            ) : (
+              <Button
+                size="lg"
+                type="button"
+                variant="secondary"
+                rounded
+                disabled={loading}
+                onClick={() => continueTalking()}
+                inverted
+              >
+                {t("common:use_microphone")}
+              </Button>
+            )}
+          </div>
         </footer>
       </form>
     </div>

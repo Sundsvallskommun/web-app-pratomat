@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useForkRef } from "@sk-web-gui/react";
+import { cx, useForkRef } from "@sk-web-gui/react";
 import { Cursor } from "./Cursor";
 
 interface TextAreaProps
@@ -15,6 +15,7 @@ interface TextAreaProps
   listening?: boolean;
   onClick: (event: MouseEvent<HTMLElement>) => void;
   value?: string;
+  textSize?: "sm" | "lg";
 }
 export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
   (props, ref) => {
@@ -26,6 +27,7 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
       errorMessage,
       listening,
       placeholder,
+      textSize = "lg",
       ...rest
     } = props;
     const [textBefore, setTextBefore] = useState<string>("");
@@ -54,7 +56,12 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
     return (
       <>
         <p
-          className="font-display text-large sm:text-[3rem] md:text-[4rem] text-light-primary hyphens-auto leading-[100%]"
+          className={cx(
+            "font-displaytext-light-primary hyphens-auto leading-[100%]",
+            textSize === "lg"
+              ? "text-large sm:text-h1-sm md:text-h1-md lg:text-h1-lg"
+              : " text-base sm:text-h4-sm md:text-h4-md lg:text-h4-lg"
+          )}
           onClick={(e) => {
             onClick && onClick(e);
           }}
@@ -65,12 +72,12 @@ export const TextArea = forwardRef<HTMLInputElement, TextAreaProps>(
             value ? (
               <>
                 {textBefore.replace(" ", " ")}
-                <Cursor />
+                <Cursor size={textSize} />
                 {textAfter.replace(" ", " ")}
               </>
             ) : (
               <>
-                <Cursor />
+                <Cursor size={textSize} />
                 <span className="opacity-40">{placeholder}</span>
               </>
             )

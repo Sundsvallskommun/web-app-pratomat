@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Start } from "./Start";
 import { StartTalking } from "./StartTalking";
 import { Chat } from "./Chat";
-import { useAssistantContext } from "@sk-web-gui/ai";
+import { useChat } from "@sk-web-gui/ai";
 
 export interface WizardPageProps {
   onNextPage?: (data?: Record<string, string>) => void;
@@ -11,12 +11,11 @@ export interface WizardPageProps {
 
 export const Main: React.FC = () => {
   const [page, setPage] = useState<number>(0);
-  const { clearHistory, setSessionId } = useAssistantContext();
+  const { newSession, session } = useChat();
 
   useEffect(() => {
     if (page === 0) {
-      clearHistory();
-      setSessionId(null);
+      newSession();
     }
     //eslint-disable-next-line
   }, [page]);
@@ -24,10 +23,11 @@ export const Main: React.FC = () => {
   const pages = [
     <Start onNextPage={() => setPage(1)} />,
     <StartTalking
+      sessionId={session?.id}
       onPrevPage={() => setPage(0)}
       onNextPage={() => setPage(2)}
     />,
-    <Chat />,
+    <Chat sessionId={session?.id} />,
   ];
 
   return (

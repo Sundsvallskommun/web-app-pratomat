@@ -24,20 +24,6 @@ export const ChatFeed: React.FC = () => {
     }
   }, [done]);
 
-  useEffect(() => {
-    if (!done) {
-      if (history.at(-1).origin === "user") {
-        setLoading(true);
-      } else {
-        setLoading(false);
-      }
-    } else {
-      if (history.at(-1).origin !== "user") {
-        setLoading(false);
-      }
-    }
-  }, [done, history]);
-
   return (
     <ul
       className="w-full max-w-[84rem] px-32 md:px-[14rem] pt-32 sm:pt-40 md:pt-[8rem] flex flex-col gap-[3rem] pb-16"
@@ -109,7 +95,7 @@ export const ChatFeed: React.FC = () => {
           <div className="grow w-full text-left" aria-hidden={true}>
             <span className="flex gap-8 items-center">
               <strong> {t("common:sundsvalls_ai")}</strong>
-              <Spinner color="white" size={2} />
+              <Spinner size={2} />
             </span>
           </div>
         </li>

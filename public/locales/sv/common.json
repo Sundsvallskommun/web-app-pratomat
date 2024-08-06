@@ -12,5 +12,11 @@
   "you": "du",
   "send": "skicka",
   "skip": "Hoppa över",
-  "done": "klar"
+  "done": "klar",
+  "want_to_talk": "Vill du hellre prata in ditt svar?",
+  "want_to_write": "Vill du hellre skriva in ditt svar?",
+  "use_keyboard": "Använd tangentbord",
+  "use_microphone": "Använd mikrofonen",
+  "click_to": "Tryck för att fortsätta {{action}}",
+  "waiting_for": "Väntar på att du ska börja {{action}}"
 }
