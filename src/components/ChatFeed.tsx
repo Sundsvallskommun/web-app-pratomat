@@ -1,6 +1,6 @@
 import { Spinner } from "@sk-web-gui/react";
 import { useEffect, useRef, useState } from "react";
-import useChat from "../hooks/useChat";
+import { useChat } from "@sk-web-gui/ai";
 import { AssistantAvatar } from "./AssistantAvatar";
 import { MarkdownRendered } from "./MarkdownRendered";
 import { UserAvatar } from "./UserAvatar";
@@ -23,20 +23,6 @@ export const ChatFeed: React.FC = () => {
       setShowLoading(false);
     }
   }, [done]);
-
-  useEffect(() => {
-    if (!done) {
-      if (history.at(-1).origin === "user") {
-        setLoading(true);
-      } else {
-        setLoading(false);
-      }
-    } else {
-      if (history.at(-1).origin !== "user") {
-        setLoading(false);
-      }
-    }
-  }, [done, history]);
 
   return (
     <ul
@@ -109,7 +95,7 @@ export const ChatFeed: React.FC = () => {
           <div className="grow w-full text-left" aria-hidden={true}>
             <span className="flex gap-8 items-center">
               <strong> {t("common:sundsvalls_ai")}</strong>
-              <Spinner color="white" size={2} />
+              <Spinner size={2} />
             </span>
           </div>
         </li>

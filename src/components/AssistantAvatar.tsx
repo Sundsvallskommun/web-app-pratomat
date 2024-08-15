@@ -5,7 +5,7 @@ export const AssistantAvatar = () => {
   return (
     <div
       aria-label={t("common:assistent")}
-      className="w-[2.596rem] h-[1.265rem] bg-[#C7B4DA] rounded-full inline-block"
+      className="w-40 h-12 bg-[#C7B4DA] rounded-full inline-block"
     ></div>
   );
 };
