@@ -11,27 +11,30 @@ interface FinalModalProps {
   onClose: () => void;
 }
 
-const genders = ["woman", "man", "none", "noanswer"];
-
-const ages = ["below 20", "20-30", "30-45", "45-70", "above 70"];
+const genders = ["woman", "man", "noanswer"];
+const classes = ["F", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
-  const [pickedAge, setPickedAge] = useState<string>("");
+  const [pickedClass, setPickedClass] = useState<string>("");
   const sessionId = useAppStore((state) => state.sessionId);
   const [sent, setSent] = useState<boolean>(false);
   const { t } = useTranslation(["common", "final"]);
   const { sendQuery, history } = useChat({ sessionId });
+
+  const getClass = (classYear: string): string => {
+    return classYear === "F" ? "förskoleklass" : `årskurs ${classYear}`;
+  };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     const message =
       pickedGender === "noanswer"
-        ? t("final:message.noanswer", { age: t(`final:age.${pickedAge}`) })
+        ? t("final:message.noanswer", { class: getClass(pickedClass) })
         : t("final:message.other", {
             gender: t(`final:gender.${pickedGender}`, { context: "full" }),
-            age: t(`final:age.${pickedAge}`),
+            class: getClass(pickedClass),
           });
     sendQuery(message);
     setSent(true);
@@ -46,7 +49,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   return (
     <Modal
       hideClosebutton
-      className="bg-bjornstigen-background-200 w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] p-32 text-center"
+      className="bg-bjornstigen-background-200 w-full md:w-[61.5rem] my-16 h-full  p-32 text-center"
       show={open}
     >
       <form onSubmit={handleSubmit}>
@@ -76,28 +79,29 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
           </fieldset>
           <fieldset className="flex flex-col gap-[2.5rem] mb-[3.4rem]">
             <legend className="text-[1.6rem] font-bold mb-[2.5rem]">
-              {t("final:my_age_is")}
+              {t("final:my_class_is")}
             </legend>
             <div
               role="group"
-              className="flex gap-12 justify-center flex-wrap md:flex-nowrap"
+              className="flex gap-24 max-w-[400px] justify-center flex-wrap md:flex-wrap"
             >
-              {ages.map((age, index) => (
+              {classes.map((classYear, index) => (
                 <RadioButton
-                  key={`${index}-${age}`}
-                  value={age}
-                  name="age"
-                  checked={age === pickedAge}
-                  onChange={(e) => setPickedAge(e.target.value)}
+                  iconButton
+                  key={`${index}-${classYear}`}
+                  value={classYear}
+                  name="class"
+                  checked={classYear === pickedClass}
+                  onChange={(e) => setPickedClass(e.target.value)}
                 >
-                  {upperFirst(t(`final:age.${age}`))}
+                  {classYear}
                 </RadioButton>
               ))}
             </div>
           </fieldset>
           <div className="flex gap-12">
             <Button
-              disabled={!pickedAge || !pickedGender || sent}
+              disabled={!pickedClass || !pickedGender || sent}
               rounded
               type="submit"
               color="bjornstigen"

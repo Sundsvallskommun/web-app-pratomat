@@ -3,11 +3,12 @@ import { cx } from "@sk-web-gui/react";
 
 interface RadioButtonProps extends ComponentPropsWithoutRef<"input"> {
   children?: ReactNode;
+  iconButton?: boolean;
 }
 
 export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
   (props, ref) => {
-    const { children, checked, className, ...rest } = props;
+    const { children, checked, className, iconButton, ...rest } = props;
     return (
       <label
         className={cx(
@@ -17,6 +18,7 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
         data-rounded="true"
         data-inverted={checked ? "false" : "true"}
         data-color="primary"
+        data-icon={iconButton}
       >
         <input
           autoFocus={false}
