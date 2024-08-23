@@ -123,7 +123,7 @@ export const Chat: React.FC<ChatProps> = ({ sessionId }) => {
         style={{ maxHeight: isWriting ? winHeight : "100%" }}
       >
         <div className="max-w-content mt-48 mb-48">
-          <h1 className="text-h1-lg text-purple-200 text-center">
+          <h1 className="text-h1-sm md:text-h1-md xl:text-h1-lg text-purple-200 text-center">
             {import.meta.env.VITE_QUESTION}
           </h1>
         </div>
