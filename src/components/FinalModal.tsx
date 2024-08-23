@@ -1,24 +1,27 @@
 import { useChat } from "@sk-web-gui/ai";
 import { Button, Modal } from "@sk-web-gui/react";
 import { upperFirst } from "lodash";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RadioButton } from "./RadioButton";
+import { useAppStore } from "../hooks/appStore";
 
 interface FinalModalProps {
   open: boolean;
+  onClose: () => void;
 }
 
 const genders = ["woman", "man", "none", "noanswer"];
 
 const ages = ["below 20", "20-30", "30-45", "45-70", "above 70"];
 
-export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
+export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
   const [pickedAge, setPickedAge] = useState<string>("");
+  const sessionId = useAppStore((state) => state.sessionId);
   const [sent, setSent] = useState<boolean>(false);
   const { t } = useTranslation(["common", "final"]);
-  const { sendQuery } = useChat();
+  const { sendQuery, history } = useChat({ sessionId });
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -32,8 +35,13 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
           });
     sendQuery(message);
     setSent(true);
-    window.location.reload();
   };
+
+  useEffect(() => {
+    if (sent && history.at(-1).origin !== "user") {
+      onClose();
+    }
+  }, [sent, history]);
 
   return (
     <Modal

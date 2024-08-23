@@ -1,8 +1,9 @@
+import { useChat } from "@sk-web-gui/ai";
 import { useEffect, useState } from "react";
+import { useAppStore } from "../hooks/appStore";
+import { Chat } from "./Chat";
 import { Start } from "./Start";
 import { StartTalking } from "./StartTalking";
-import { Chat } from "./Chat";
-import { useChat } from "@sk-web-gui/ai";
 
 export interface WizardPageProps {
   onNextPage?: (data?: Record<string, string>) => void;
@@ -11,7 +12,17 @@ export interface WizardPageProps {
 
 export const Main: React.FC = () => {
   const [page, setPage] = useState<number>(0);
-  const { newSession, session } = useChat();
+  const [sessionId, setSessionId] = useAppStore((state) => [
+    state.sessionId,
+    state.setSessionId,
+  ]);
+  const {
+    sendQuery,
+    history,
+    done,
+    newSession,
+    session: { id, isNew },
+  } = useChat({ sessionId });
 
   useEffect(() => {
     if (page === 0) {
@@ -20,14 +31,27 @@ export const Main: React.FC = () => {
     //eslint-disable-next-line
   }, [page]);
 
+  useEffect(() => {
+    if (typeof id === "string" && id !== sessionId) {
+      setSessionId(id);
+    }
+  }, [id, isNew, history]);
+
   const pages = [
     <Start onNextPage={() => setPage(1)} />,
     <StartTalking
-      sessionId={session?.id}
+      sendQuery={sendQuery}
+      history={history}
+      done={done}
       onPrevPage={() => setPage(0)}
       onNextPage={() => setPage(2)}
     />,
-    <Chat sessionId={session?.id} />,
+    <Chat
+      sendQuery={sendQuery}
+      history={history}
+      sessionId={sessionId}
+      onNextPage={() => setPage(0)}
+    />,
   ];
 
   return (
