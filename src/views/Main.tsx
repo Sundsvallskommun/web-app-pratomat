@@ -16,13 +16,9 @@ export const Main: React.FC = () => {
     state.sessionId,
     state.setSessionId,
   ]);
-  const {
-    sendQuery,
-    history,
-    done,
-    newSession,
-    session: { id, isNew },
-  } = useChat({ sessionId });
+  const { sendQuery, history, done, newSession, session } = useChat({
+    sessionId,
+  });
 
   useEffect(() => {
     if (page === 0) {
@@ -32,10 +28,10 @@ export const Main: React.FC = () => {
   }, [page]);
 
   useEffect(() => {
-    if (typeof id === "string" && id !== sessionId) {
-      setSessionId(id);
+    if (typeof session?.id === "string" && session.id !== sessionId) {
+      setSessionId(session.id);
     }
-  }, [id, isNew, history]);
+  }, [session, history]);
 
   const pages = [
     <Start onNextPage={() => setPage(1)} />,
