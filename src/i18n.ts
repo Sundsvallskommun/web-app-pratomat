@@ -7,7 +7,9 @@ i18n
   .use(Backend)
   .init({
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json",
+      loadPath: `${
+        import.meta.env.VITE_BASE_URL || "/"
+      }locales/{{lng}}/{{ns}}.json`,
     },
     defaultNS: "common",
     lng: "sv",
