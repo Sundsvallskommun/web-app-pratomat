@@ -1,22 +1,26 @@
-import { Icon, useGui, Tooltip, useSnackbar, Button } from "@sk-web-gui/react";
+import { ChatHistory } from "@sk-web-gui/ai";
+import { Button, Icon, Tooltip, useGui, useSnackbar } from "@sk-web-gui/react";
 import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "usehooks-ts";
 import { BigButton } from "../components/BigButton";
 import { TextArea } from "../components/TextArea";
 import { Waves } from "../components/Waves";
-import { useChat } from "@sk-web-gui/ai";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { WizardPageProps } from "./Main";
-import { useTranslation } from "react-i18next";
 
 interface StartTalkingProps extends WizardPageProps {
-  sessionId: string;
+  history: ChatHistory;
+  sendQuery: (query: string) => void;
+  done: boolean;
 }
 
 export const StartTalking: React.FC<StartTalkingProps> = ({
+  history,
+  sendQuery,
+  done,
   onNextPage,
   onPrevPage,
-  sessionId,
 }) => {
   const [text, setText] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,7 +28,7 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
   const isMobile = useMediaQuery(`screen and (max-width:${theme.screens.md})`);
   const [useKeyboard, setUseKeyboard] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const { sendQuery, done, history } = useChat({ sessionId });
+
   const [dicateHover, setDictateHover] = useState<boolean>(false);
   const [dicateFocus, setDictateFocus] = useState<boolean>(false);
   const [backHover, setBackHover] = useState<boolean>(false);
@@ -116,10 +120,10 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
   }, [text, useKeyboard]);
 
   useEffect(() => {
-    if (history.length > 1 && loading) {
+    if (history.length > 1) {
       onNextPage && onNextPage();
     }
-  }, [history, loading, onNextPage]);
+  }, [history, onNextPage]);
 
   useEffect(() => {
     if (!useKeyboard && !listening && text) {

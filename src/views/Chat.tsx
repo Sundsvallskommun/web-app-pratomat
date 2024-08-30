@@ -1,4 +1,4 @@
-import { AIFeed, useChat } from "@sk-web-gui/ai";
+import { AIFeed, ChatHistory } from "@sk-web-gui/ai";
 import { Button } from "@sk-web-gui/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,17 +12,21 @@ import { WizardPageProps } from "./Main";
 
 interface ChatProps extends WizardPageProps {
   sessionId: string;
+  history: ChatHistory;
+  sendQuery: (query: string) => void;
 }
 
-export const Chat: React.FC<ChatProps> = ({ sessionId }) => {
+export const Chat: React.FC<ChatProps> = ({
+  sessionId,
+  history,
+  sendQuery,
+  onNextPage,
+}) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
   const [useKeyboard, setUseKeyboard] = useState<boolean>(false);
   const [winHeight, setWinHeight] = useState<number>(window.innerHeight);
   const [isWriting, setIsWriting] = useState<boolean>(false);
-  const { history, sendQuery } = useChat({
-    sessionId: sessionId,
-  });
   const delayedSubmit = useRef(setTimeout(() => {}, 0));
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -123,7 +127,7 @@ export const Chat: React.FC<ChatProps> = ({ sessionId }) => {
         style={{ maxHeight: isWriting ? winHeight : "100%" }}
       >
         <div className="max-w-content mt-48 mb-48">
-          <h1 className="text-h1-lg text-purple-200 text-center">
+          <h1 className="text-h1-sm md:text-h1-md xl:text-h1-lg text-purple-200 text-center">
             {import.meta.env.VITE_QUESTION}
           </h1>
         </div>
@@ -228,7 +232,7 @@ export const Chat: React.FC<ChatProps> = ({ sessionId }) => {
         </footer>
       </div>
 
-      <FinalModal open={showModal} />
+      <FinalModal open={showModal} onClose={() => onNextPage()} />
     </div>
   );
 };

@@ -15,8 +15,8 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
           className
         )}
         data-rounded="true"
-        data-inverted={!checked}
-        data-color={checked ? "juniskar" : "primary"}
+        data-inverted={checked ? "false" : "true"}
+        data-color="primary"
       >
         <input
           autoFocus={false}

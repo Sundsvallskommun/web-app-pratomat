@@ -1,28 +1,31 @@
-import { Button, Modal, Spinner } from "@sk-web-gui/react";
-import { FormEvent, useEffect, useState } from "react";
 import { useChat } from "@sk-web-gui/ai";
-import { RadioButton } from "./RadioButton";
+import { Button, Modal } from "@sk-web-gui/react";
+import { upperFirst } from "lodash";
+import { FormEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { RadioButton } from "./RadioButton";
+import { useAppStore } from "../hooks/appStore";
 
 interface FinalModalProps {
   open: boolean;
+  onClose: () => void;
 }
 
 const genders = ["woman", "man", "none", "noanswer"];
 
 const ages = ["below 20", "20-30", "30-45", "45-70", "above 70"];
 
-export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
+export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   const [pickedGender, setPickedGender] = useState<string>("");
   const [pickedAge, setPickedAge] = useState<string>("");
+  const sessionId = useAppStore((state) => state.sessionId);
   const [sent, setSent] = useState<boolean>(false);
   const { t } = useTranslation(["common", "final"]);
-  const [recieved, setRecieved] = useState<boolean>(false);
-  const { sendQuery, clearHistory, history } = useChat();
+  const { sendQuery, history } = useChat({ sessionId });
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    //TODO: Handle submit
+
     const message =
       pickedGender === "noanswer"
         ? t("final:message.noanswer", { age: t(`final:age.${pickedAge}`) })
@@ -35,22 +38,15 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
   };
 
   useEffect(() => {
-    if (sent && history.at(-1).origin === "assistant" && history.at(-1).text) {
-      setRecieved(true);
+    if (sent && history.at(-1).origin !== "user") {
+      onClose();
     }
   }, [sent, history]);
-
-  useEffect(() => {
-    if (recieved) {
-      clearHistory();
-      window.location.reload();
-    }
-  }, [clearHistory, recieved]);
 
   return (
     <Modal
       hideClosebutton
-      className="bg-[#FEDFE2] w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] pt-[7.3rem] pb-[2.6rem] px-[3.6rem] text-center"
+      className="bg-bjornstigen-background-200 w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] p-32 text-center"
       show={open}
     >
       <form onSubmit={handleSubmit}>
@@ -72,9 +68,8 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
                   name="gender"
                   checked={pickedGender === gender}
                   onChange={(e) => setPickedGender(e.target.value)}
-                  className="capitalize"
                 >
-                  {t(`final:gender.${gender}`)}
+                  {upperFirst(t(`final:gender.${gender}`))}
                 </RadioButton>
               ))}
             </div>
@@ -92,11 +87,10 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
                   key={`${index}-${age}`}
                   value={age}
                   name="age"
-                  className="capitalize"
                   checked={age === pickedAge}
                   onChange={(e) => setPickedAge(e.target.value)}
                 >
-                  {t(`final:age.${age}`)}
+                  {upperFirst(t(`final:age.${age}`))}
                 </RadioButton>
               ))}
             </div>
@@ -106,15 +100,15 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open }) => {
               disabled={!pickedAge || !pickedGender || sent}
               rounded
               type="submit"
-              className="capitalize"
+              color="bjornstigen"
             >
-              {!sent ? t("common:done") : <Spinner size={2.4} />}
+              {upperFirst(t("final:send_and_exit"))}
             </Button>
             <Button
               variant="tertiary"
               showBackground={false}
+              rounded
               onClick={() => window.location.reload()}
-              className="font-normal font-header"
             >
               {t("common:skip")}
             </Button>
