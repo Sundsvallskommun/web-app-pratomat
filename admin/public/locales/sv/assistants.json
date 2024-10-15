@@ -1,0 +1,27 @@
+{
+  "name_zero": "pratomater",
+  "name_one": "pratomat",
+  "name_many": "pratomater",
+  "name_other": "pratomater",
+  "properties": {
+    "id": "Id",
+    "name": "Namn",
+    "app": "Applikationsnamn",
+    "assistantId": "Assistent-id",
+    "question": "Inledande fråga",
+    "startText": "Knapptext - start",
+    "submitText": "Knapptext - skicka första fråga",
+    "published": "publicerad",
+    "finalQuestions": {
+      "DEFAULT": "slutfråga",
+      "DEFAULT_many": "slutfrågor",
+      "question": "Fråga",
+      "answers": {
+        "DEFAULT": "svar",
+        "DEFAULT_many": "svar",
+        "value": "Knapptext",
+        "output": "Genererad svarstext"
+      }
+    }
+  }
+}
