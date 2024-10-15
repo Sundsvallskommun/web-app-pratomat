@@ -31,15 +31,16 @@ export default function Start() {
   const onLogin = () => {
     const path = router.query.path || new URLSearchParams(window.location.search).get('path') || '';
 
-    // NOTE: send user to login with SSO
-    router.push({
-      pathname: apiURL('/saml/login'),
-      query: {
-        successRedirect: `${appURL(path as string)}`,
-        failureRedirect: `${appURL()}/login?test="kossa"`,
-      },
+    const url = new URL(apiURL('/saml/login'));
+    const queries = new URLSearchParams({
+      successRedirect: `${appURL(path as string)}`,
+      failureRedirect: `${appURL()}/login`,
     });
+    url.search = queries.toString();
+    // NOTE: send user to login with SSO
+    window.location.href = url.toString();
   };
+
   useEffect(() => {
     setInitalFocus();
     if (!router.isReady) return;
