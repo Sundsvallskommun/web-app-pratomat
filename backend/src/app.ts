@@ -87,22 +87,25 @@ const samlStrategy = new Strategy(
     }
     const {
       givenName,
+      givenname,
       surname,
       citizenIdentifier,
       username,
       attributes: { groups },
     } = profile;
 
+    const firstName = givenName ?? givenname;
+
     console.log('profile: ', profile);
 
-    if (!givenName || !surname || !citizenIdentifier || !groups) {
+    if (!firstName || !surname || !citizenIdentifier || !groups) {
       return done({
         name: 'SAML_MISSING_ATTRIBUTES',
         message: 'Missing profile attributes',
       });
     }
 
-    const isAdmin = groups?.includes('SG_AI-WebAppInterfaceAdmin');
+    const isAdmin = groups?.toLowerCase()?.includes('sg_ai-webappinterfaceadmin');
 
     if (!isAdmin) {
       return done({
