@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/database/database.db"
+}
+
+model UserSettings {
+  id     Int    @id @default(autoincrement())
+  userId String @unique
+}
+
+
+
+model Assistant {
+  id                Int     @id @default(autoincrement())
+  name              String
+  app               String
+  assistantId       String
+  question          String  @default("Hur skulle du vilja utveckla Sundsvalls stadskärna?")
+  startText         String  @default("Säg vad du tycker")
+  submitText        String  @default("Skicka svar")
+  published         Boolean @default(false)
+  finalQuestions    FinalQuestion[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model FinalQuestion {
+  id              Int       @id @default(autoincrement())
+  assistant       Assistant @relation(fields: [assistantId], references: [id], onDelete: Cascade)
+  assistantId     Int
+  question        String
+  answers         FinalAnswer[]
+}
+
+model FinalAnswer {
+  id              Int           @id @default(autoincrement())
+  question        FinalQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId      Int
+  value           String
+  output          String
+}
+
+
