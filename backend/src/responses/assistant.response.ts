@@ -8,7 +8,7 @@ import type {
   FinalAnswer as FinalAnswerType,
   FinalQuestion as FinalQuestionType,
 } from '../interfaces/assistant.interface';
-import { backgroundColors } from '@/utils/enums';
+import { backgroundColor } from '../interfaces/assistant.interface';
 
 export class FinalAnswer implements FinalAnswerType {
   @IsString()
@@ -142,8 +142,8 @@ export class CreateAssistant implements Omit<AssistantType, 'id' | 'createdAt' |
   @Type(() => CreateFinalQuestion)
   finalQuestions: CreateFinalQuestion[];
 
-  @IsEnum(backgroundColors)
-  backgroundColor: backgroundColors;
+  @IsEnum(backgroundColor)
+  backgroundColor: backgroundColor;
 }
 
 export class UpdateAssistant implements Partial<Omit<AssistantType, 'updatedAt' | 'createdAt'>> {
@@ -173,9 +173,9 @@ export class UpdateAssistant implements Partial<Omit<AssistantType, 'updatedAt' 
   @IsOptional()
   finalQuestions?: UpdateFinalQuestion[];
 
-  @IsEnum(backgroundColors)
+  @IsEnum(backgroundColor)
   @IsOptional()
-  backgroundColor?: backgroundColors;
+  backgroundColor?: backgroundColor;
 }
 
 export class PublicAssistantApiResponse implements ApiResponse<PublicAssistant> {
