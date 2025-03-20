@@ -103,6 +103,7 @@ export interface CreateAssistant {
   question: string;
   startText: string;
   submitText: string;
+  backgroundColor?: string;
   published?: boolean;
   finalQuestions: CreateFinalQuestion[];
 }
@@ -114,6 +115,7 @@ export interface UpdateAssistant {
   question?: string;
   startText?: string;
   submitText?: string;
+  backgroundColor?: string;
   published?: boolean;
   finalQuestions?: UpdateFinalQuestion[];
 }
