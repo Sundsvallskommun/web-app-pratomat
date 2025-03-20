@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
 import ApiResponse from '../interfaces/api-service.interface';
 import type {
   Assistant as AssistantType,
@@ -8,6 +8,7 @@ import type {
   FinalAnswer as FinalAnswerType,
   FinalQuestion as FinalQuestionType,
 } from '../interfaces/assistant.interface';
+import { backgroundColors } from '@/utils/enums';
 
 export class FinalAnswer implements FinalAnswerType {
   @IsString()
@@ -140,6 +141,9 @@ export class CreateAssistant implements Omit<AssistantType, 'id' | 'createdAt' |
   @ValidateNested({ each: true })
   @Type(() => CreateFinalQuestion)
   finalQuestions: CreateFinalQuestion[];
+
+  @IsEnum(backgroundColors)
+  backgroundColor: backgroundColors;
 }
 
 export class UpdateAssistant implements Partial<Omit<AssistantType, 'updatedAt' | 'createdAt'>> {
@@ -168,6 +172,10 @@ export class UpdateAssistant implements Partial<Omit<AssistantType, 'updatedAt' 
   @Type(() => UpdateFinalQuestion)
   @IsOptional()
   finalQuestions?: UpdateFinalQuestion[];
+
+  @IsEnum(backgroundColors)
+  @IsOptional()
+  backgroundColor?: backgroundColors;
 }
 
 export class PublicAssistantApiResponse implements ApiResponse<PublicAssistant> {
