@@ -42,7 +42,7 @@ export type FinalAnswer = {
   output: string;
 };
 
-export enum backgroundColor {
+export enum BackgroundColor {
   Vattjom = 'vattjom',
   Grönsta = 'gronsta',
   Björnstigen = 'bjornstigen',
