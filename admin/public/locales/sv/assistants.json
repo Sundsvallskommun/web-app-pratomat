@@ -6,6 +6,7 @@
   "properties": {
     "id": "Id",
     "name": "Namn",
+    "backgroundColor": "Bakgrundsfärg",
     "app": "Applikationsnamn",
     "assistantId": "Assistent-id",
     "question": "Inledande fråga",
