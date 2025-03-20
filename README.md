@@ -1,16 +1,17 @@
 # Pratomaten
 
-En AI-assistent för att lämna förslag, önskemål, feedback eller liknande, vid t.ex. evenemang.
+En AI assistent för att lämna förslag, önskemål, feedback eller liknande, vid t.ex. evenemang.
 
-## Frontend
+## frontend
 
 React-app.
 
-## Backend
+## backend
 
-Databas + API.
+Databas + api
 
-## Admin
+## admin
+
 
 Next.js med språkstöd. Här kan du lägga till och hantera pratomater.
 
