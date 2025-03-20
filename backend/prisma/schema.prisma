@@ -21,7 +21,7 @@ model Assistant {
   question          String  @default("Hur skulle du vilja utveckla Sundsvalls stadskärna?")
   startText         String  @default("Säg vad du tycker")
   submitText        String  @default("Skicka svar")
-  backgroundColor   String @default("vattjom")
+  backgroundColor   String @default("bjornstigen")
   published         Boolean @default(false)
   finalQuestions    FinalQuestion[]
   createdAt         DateTime           @default(now())
