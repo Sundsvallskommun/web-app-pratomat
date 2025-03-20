@@ -13,7 +13,6 @@ model UserSettings {
 }
 
 
-
 model Assistant {
   id                Int     @id @default(autoincrement())
   name              String
@@ -22,6 +21,7 @@ model Assistant {
   question          String  @default("Hur skulle du vilja utveckla Sundsvalls stadskärna?")
   startText         String  @default("Säg vad du tycker")
   submitText        String  @default("Skicka svar")
+  backgroundColor   String @default("vattjom")
   published         Boolean @default(false)
   finalQuestions    FinalQuestion[]
   createdAt         DateTime           @default(now())
