@@ -22,11 +22,9 @@ export const EditResourceInput = React.forwardRef<HTMLInputElement, EditResource
       <></>
     : <FormControl required={required}>
         {type === 'boolean' ?
-          <>
-            <Switch {...register(property)} color="gronsta">
-              {label}
-            </Switch>
-          </>
+          <Switch {...register(property)} color="gronsta">
+            {label}
+          </Switch>
         : <>
             <FormLabel>{label}</FormLabel>
             <Input type={type === 'number' ? 'number' : 'text'} {...register(property)} {...rest} />
