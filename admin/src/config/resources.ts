@@ -18,7 +18,7 @@ const assistants: Resource<Assistant, CreateAssistant, UpdateAssistant> = {
     question: '',
     startText: '',
     submitText: '',
-    backgroundColor: '',
+    backgroundColor: 'bjornstigen',
     published: false,
     finalQuestions: [{ question: '', answers: [{ value: '', output: '' }] }],
   },

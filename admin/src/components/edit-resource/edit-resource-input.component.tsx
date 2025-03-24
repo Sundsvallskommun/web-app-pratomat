@@ -1,7 +1,6 @@
-import { Input, FormControl, FormLabel, Switch, Select } from '@sk-web-gui/react';
+import { Input, FormControl, FormLabel, Switch } from '@sk-web-gui/react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { backgroundColors } from '@utils/enums';
 
 type InputProps = React.ComponentPropsWithoutRef<typeof Input.Component>;
 
@@ -18,22 +17,11 @@ export const EditResourceInput = React.forwardRef<HTMLInputElement, EditResource
   const { register, watch } = useFormContext();
   const data = watch(property);
   const type = typeof data;
-  const isBackgroundColor = property === 'backgroundColor';
+
   return type === 'object' ?
       <></>
     : <FormControl required={required}>
-        {isBackgroundColor ?
-          <>
-            <FormLabel>{label}</FormLabel>
-            <Select {...register(property)}>
-              {Object.entries(backgroundColors).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {key}
-                </option>
-              ))}
-            </Select>
-          </>
-        : type === 'boolean' ?
+        {type === 'boolean' ?
           <>
             <Switch {...register(property)} color="gronsta">
               {label}

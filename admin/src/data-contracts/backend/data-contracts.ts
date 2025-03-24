@@ -96,6 +96,12 @@ export interface PublicAssistant {
   hash: string;
 }
 
+export interface PublicAssistantSummary {
+  app: string;
+  name: string;
+  question: string;
+}
+
 export interface CreateAssistant {
   name: string;
   app: string;
@@ -103,9 +109,9 @@ export interface CreateAssistant {
   question: string;
   startText: string;
   submitText: string;
-  backgroundColor?: string;
   published?: boolean;
   finalQuestions: CreateFinalQuestion[];
+  backgroundColor: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
 }
 
 export interface UpdateAssistant {
@@ -115,13 +121,18 @@ export interface UpdateAssistant {
   question?: string;
   startText?: string;
   submitText?: string;
-  backgroundColor?: string;
   published?: boolean;
   finalQuestions?: UpdateFinalQuestion[];
+  backgroundColor?: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
 }
 
 export interface PublicAssistantApiResponse {
   data: PublicAssistant;
+  message: string;
+}
+
+export interface PublicAssistantsApiResponse {
+  data: PublicAssistantSummary[];
   message: string;
 }
 
