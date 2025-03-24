@@ -109,7 +109,6 @@ export interface CreateAssistant {
   question: string;
   startText: string;
   submitText: string;
-  backgroundColor?: string;
   published?: boolean;
   finalQuestions: CreateFinalQuestion[];
   backgroundColor: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
@@ -122,7 +121,6 @@ export interface UpdateAssistant {
   question?: string;
   startText?: string;
   submitText?: string;
-  backgroundColor?: string;
   published?: boolean;
   finalQuestions?: UpdateFinalQuestion[];
   backgroundColor?: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
