@@ -7,14 +7,13 @@ import { capitalize } from 'underscore.string';
 import { EditResourceArray } from '../edit-resource/edit-resource-array.component';
 import { EditResourceInput } from '../edit-resource/edit-resource-input.component';
 import { EditResourceObject } from '../edit-resource/edit-resource-object.component';
-import { backgroundColors } from '@utils/enums';
-import { BackgroundColorSelect } from '@components/background-color-picker/background-color-picker';
+import { BackgroundColorPicker } from '@components/background-color-picker/background-color-picker';
 
 interface EditResourceProps {
   isNew?: boolean;
 }
 
-export const EditResource: React.FC<EditResourceProps> = ({ isNew }) => {
+export const EditResource: React.FC<EditResourceProps> = ({}) => {
   const { t } = useTranslation();
   const resource = 'assistants';
   const { create, update, requiredFields } = resources[resource];
@@ -45,11 +44,7 @@ export const EditResource: React.FC<EditResourceProps> = ({ isNew }) => {
               </Fragment>
             );
           })}
-        <BackgroundColorSelect
-          property="backgroundColor"
-          label={t('assistants:properties.backgroundColor')}
-          options={backgroundColors}
-        />
+        <BackgroundColorPicker property="backgroundColor" label={t(`${resource}:properties.backgroundColorLabel`)} />
         <EditResourceInput
           property={'published'}
           required={true}

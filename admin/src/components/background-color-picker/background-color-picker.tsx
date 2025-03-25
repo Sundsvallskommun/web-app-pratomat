@@ -1,20 +1,17 @@
 import { FormControl, FormLabel, Select } from '@sk-web-gui/react';
 import { useFormContext } from 'react-hook-form';
+import { backgroundColors } from '@public/locales/sv/assistants.json';
 
-export const BackgroundColorSelect: React.FC<{ property: string; label: string; options: Record<string, string> }> = ({
-  property,
-  label,
-  options,
-}) => {
+export const BackgroundColorPicker: React.FC<{ property: string; label: string }> = ({ property, label }) => {
   const { register } = useFormContext();
 
   return (
     <FormControl>
       <FormLabel htmlFor={property}>{label}</FormLabel>
       <Select id={property} {...register(property)}>
-        {Object.entries(options).map(([key, value]) => (
-          <option key={key} value={value}>
-            {key}
+        {Object.entries(backgroundColors).map(([key, value]) => (
+          <option key={key} value={key}>
+            {value}
           </option>
         ))}
       </Select>

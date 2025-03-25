@@ -6,7 +6,7 @@
   "properties": {
     "id": "Id",
     "name": "Namn",
-    "backgroundColor": "Bakgrundsfärg",
+    "backgroundColorLabel": "Bakgrundsfärg",
     "app": "Applikationsnamn",
     "assistantId": "Assistent-id",
     "question": "Inledande fråga",
@@ -24,5 +24,11 @@
         "output": "Genererad svarstext"
       }
     }
+  },
+  "backgroundColors": {
+    "vattjom": "Vattjom",
+    "gronsta": "Grönsta",
+    "bjornstigen": "Björnstigen",
+    "juniskar": "Juniskär"
   }
 }
