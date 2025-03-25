@@ -50,7 +50,6 @@ export const EditAssistant: React.FC = () => {
 
   const formdata = getFormattedFields(watch());
 
-  useEffect(() => {}, [id, isNew]);
   useRouteGuard(isDirty);
 
   useEffect(() => {
