@@ -1,3 +1,4 @@
+import { CreateAssistant } from '@data-contracts/backend/data-contracts';
 import { FormControl, FormLabel, Select } from '@sk-web-gui/react';
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +7,9 @@ export const BackgroundColorPicker: React.FC<{ property: string; label: string }
   const { register } = useFormContext();
   const { t } = useTranslation();
 
-  const backgroundColorKeys = ['vattjom', 'gronsta', 'bjornstigen', 'juniskar'];
+  type BackgroundColorKey = CreateAssistant['backgroundColor'];
+
+  const backgroundColorKeys: BackgroundColorKey[] = ['vattjom', 'gronsta', 'bjornstigen', 'juniskar'];
 
   return (
     <FormControl>
