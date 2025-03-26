@@ -7,8 +7,8 @@ export const BackgroundColorPicker: React.FC<{ property: string; label: string }
 
   return (
     <FormControl>
-      <FormLabel htmlFor={property}>{label}</FormLabel>
-      <Select id={property} {...register(property)}>
+      <FormLabel>{label}</FormLabel>
+      <Select {...register(property)}>
         {Object.entries(backgroundColors).map(([key, value]) => (
           <option key={key} value={key}>
             {value}
