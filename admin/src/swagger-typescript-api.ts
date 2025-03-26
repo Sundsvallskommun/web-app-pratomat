@@ -27,7 +27,7 @@ const main = async () => {
     `curl -o ${PATH_TO_OUTPUT_DIR}/backend/swagger.json ${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_API_PATH}/swagger.json`
   );
   await exec(
-    `npx swagger-typescript-api --modular -p ${PATH_TO_OUTPUT_DIR}/backend/swagger.json -o ${PATH_TO_OUTPUT_DIR}/backend --axios --clean-output --extract-enums`,
+    `npx swagger-typescript-api --modular -p ${PATH_TO_OUTPUT_DIR}/backend/swagger.json -o ${PATH_TO_OUTPUT_DIR}/backend --axios --clean-output`,
     stdout
   );
 };

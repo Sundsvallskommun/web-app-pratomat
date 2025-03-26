@@ -15,6 +15,7 @@ import {
   ClientUserApiResponse,
   CreateAssistant,
   PublicAssistantApiResponse,
+  PublicAssistantsApiResponse,
   UpdateAssistant,
 } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
@@ -140,13 +141,27 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags Assistants
-   * @name AssistantsControllerGetPublic
-   * @summary Get a public assistant
-   * @request GET:/api/assistants/public/{id}
+   * @name AssistantsControllerGetPublicAssistants
+   * @summary Get a list of public assistants
+   * @request GET:/api/assistants/public/all
    */
-  assistantsControllerGetPublic = (id: number, params: RequestParams = {}) =>
+  assistantsControllerGetPublicAssistants = (params: RequestParams = {}) =>
+    this.request<PublicAssistantsApiResponse, any>({
+      path: `/api/assistants/public/all`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Assistants
+   * @name AssistantsControllerGetPublicAssistant
+   * @summary Get a public assistant
+   * @request GET:/api/assistants/public/{app}
+   */
+  assistantsControllerGetPublicAssistant = (app: string, params: RequestParams = {}) =>
     this.request<PublicAssistantApiResponse, any>({
-      path: `/api/assistants/public/${id}`,
+      path: `/api/assistants/public/${app}`,
       method: 'GET',
       ...params,
     });
