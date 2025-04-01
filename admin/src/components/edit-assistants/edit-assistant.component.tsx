@@ -44,7 +44,7 @@ export const EditResource: React.FC<EditResourceProps> = ({}) => {
               </Fragment>
             );
           })}
-        <BackgroundColorPicker property="backgroundColor" label={t(`${resource}:properties.backgroundColorLabel`)} />
+        <BackgroundColorPicker property="backgroundColor" label={t(`${resource}:properties.backgroundColor`)} />
         <EditResourceInput
           property={'published'}
           required={true}
