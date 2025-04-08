@@ -13,6 +13,8 @@ interface AppStore {
   setStartText: (startText: string) => void;
   submitText?: string;
   setSubmitText: (submitText: string) => void;
+  backgroundColor?: string;
+  setBackgroundColor: (color: string) => void;
 }
 
 export const useAppStore = createWithEqualityFn(
@@ -28,6 +30,8 @@ export const useAppStore = createWithEqualityFn(
       setStartText: (startText) => set(() => ({ startText })),
       submitText: undefined,
       setSubmitText: (submitText) => set(() => ({ submitText })),
+      backgroundColor: undefined,
+      setBackgroundColor: (color) => set(() => ({ backgroundColor: color })),
     }),
     {
       name: import.meta.env.VITE_APPLICATION,

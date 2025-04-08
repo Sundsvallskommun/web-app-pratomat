@@ -18,6 +18,60 @@ import { generateHash } from '@/utils/create-hash';
 
 @Controller()
 export class AssistantsController {
+  @Get('/assistants/public/all')
+  @OpenAPI({
+    summary: 'Get a list of public assistants',
+  })
+  @ResponseSchema(PublicAssistantsApiResponse)
+  async getPublicAssistants(@Res() response: Response<PublicAssistantsApiResponse>): Promise<Response<PublicAssistantsApiResponse>> {
+    try {
+      const assistants = await prisma.assistant.findMany({
+        where: { published: true },
+        select: {
+          name: true,
+          app: true,
+          question: true,
+        },
+      });
+
+      return response.send({ data: assistants, message: 'success' });
+    } catch {
+      throw new HttpException(404, 'Not found');
+    }
+  }
+
+  @Get('/assistants/public/:app')
+  @OpenAPI({
+    summary: 'Get a public assistant',
+  })
+  @ResponseSchema(PublicAssistantApiResponse)
+  async getPublicAssistant(
+    @Param('app') app: string,
+    @Res() response: Response<PublicAssistantApiResponse>,
+  ): Promise<Response<PublicAssistantApiResponse>> {
+    try {
+      const assistant = await prisma.assistant.findFirst({
+        where: { app, published: true },
+        select: {
+          app: true,
+          assistantId: true,
+          question: true,
+          startText: true,
+          submitText: true,
+          backgroundColor: true,
+          finalQuestions: {
+            select: { id: true, question: true, answers: { select: { value: true, output: true, id: true } } },
+          },
+        },
+      });
+      const hash = generateHash('', assistant.assistantId, assistant.app);
+
+      return response.send({ data: { ...assistant, hash }, message: 'success' });
+    } catch {
+      throw new HttpException(404, 'Not found');
+    }
+  }
+
   @Get('/assistants')
   @OpenAPI({
     summary: 'Get all assistants',
@@ -207,59 +261,6 @@ export class AssistantsController {
       return response.send({ message: 'deleted', data: true });
     } catch (err) {
       throw err;
-    }
-  }
-
-  @Get('/assistants/public/all')
-  @OpenAPI({
-    summary: 'Get a list of public assistants',
-  })
-  @ResponseSchema(PublicAssistantsApiResponse)
-  async getPublicAssistants(@Res() response: Response<PublicAssistantsApiResponse>): Promise<Response<PublicAssistantsApiResponse>> {
-    try {
-      const assistants = await prisma.assistant.findMany({
-        where: { published: true },
-        select: {
-          name: true,
-          app: true,
-          question: true,
-        },
-      });
-
-      return response.send({ data: assistants, message: 'success' });
-    } catch {
-      throw new HttpException(404, 'Not found');
-    }
-  }
-
-  @Get('/assistants/public/:app')
-  @OpenAPI({
-    summary: 'Get a public assistant',
-  })
-  @ResponseSchema(PublicAssistantApiResponse)
-  async getPublicAssistant(
-    @Param('app') app: string,
-    @Res() response: Response<PublicAssistantApiResponse>,
-  ): Promise<Response<PublicAssistantApiResponse>> {
-    try {
-      const assistant = await prisma.assistant.findFirst({
-        where: { app, published: true },
-        select: {
-          app: true,
-          assistantId: true,
-          question: true,
-          startText: true,
-          submitText: true,
-          finalQuestions: {
-            select: { id: true, question: true, answers: { select: { value: true, output: true, id: true } } },
-          },
-        },
-      });
-      const hash = generateHash('', assistant.assistantId, assistant.app);
-
-      return response.send({ data: { ...assistant, hash }, message: 'success' });
-    } catch {
-      throw new HttpException(404, 'Not found');
     }
   }
 }
