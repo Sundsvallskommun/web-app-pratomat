@@ -8,6 +8,7 @@ export type PublicAssistant = {
   submitText: string;
   finalQuestions: FinalQuestion[];
   hash: string;
+  backgroundColor?: string;
 };
 
 export type PublicAssistantSummary = {

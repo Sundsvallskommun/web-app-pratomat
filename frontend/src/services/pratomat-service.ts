@@ -7,7 +7,9 @@ import {
   PublicAssistantSummary,
 } from "../interfaces/assistant.interface";
 
-export const usePratomat = (id: number | string): { loaded: boolean } => {
+export const usePratomat = (
+  id: number | string
+): { loaded: boolean; pratomat?: PublicAssistant } => {
   const [setQuestion, setFinalQuestions, setStartText, setSubmitText] =
     useAppStore((state) => [
       state.setQuestion,
@@ -18,30 +20,32 @@ export const usePratomat = (id: number | string): { loaded: boolean } => {
   const [setSettings] = useAssistantStore((state) => [state.setSettings]);
 
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [pratomat, setPratomat] = useState<PublicAssistant>();
 
   useEffect(() => {
     apiService
       .get<ApiResponse<PublicAssistant>>(`/assistants/public/${id}`)
       .then((res) => {
-        const pratomat = res?.data?.data;
+        const data = res?.data?.data;
 
-        if (pratomat) {
-          setQuestion(pratomat.question);
-          setFinalQuestions(pratomat.finalQuestions);
+        if (data) {
+          setQuestion(data.question);
+          setFinalQuestions(data.finalQuestions);
           setSettings({
-            app: pratomat.app,
-            assistantId: pratomat.assistantId,
-            hash: pratomat.hash,
+            app: data.app,
+            assistantId: data.assistantId,
+            hash: data.hash,
             user: "",
           });
-          setStartText(pratomat.startText);
-          setSubmitText(pratomat.submitText);
+          setStartText(data.startText);
+          setSubmitText(data.submitText);
+          setPratomat(data);
           setLoaded(true);
         }
       });
   }, [id]);
 
-  return { loaded };
+  return { loaded, pratomat };
 };
 
 export const usePratomatList = (): {

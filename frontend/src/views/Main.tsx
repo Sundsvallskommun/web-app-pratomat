@@ -11,7 +11,11 @@ export interface WizardPageProps {
   onPrevPage?: (data?: Record<string, string>) => void;
 }
 
-export const Main: React.FC = () => {
+interface MainProps {
+  appId: string;
+}
+
+export const Main: React.FC<MainProps> = ({ appId }) => {
   const [page, setPage] = useState<number>(0);
   const [sessionId, setSessionId] = useAppStore((state) => [
     state.sessionId,
@@ -21,12 +25,8 @@ export const Main: React.FC = () => {
     sessionId,
   });
   const backgroundColor = useAppStore((state) => state.backgroundColor);
-  //Hämtar ID från URL på detta sätt, ska vi annars använda useParams eller liknande?
-  const url = new URL(window.location.href);
-  const parts = url.pathname.split("/");
-  const appId = parts[parts.length - 1];
 
-  useBackgroundColor({ appId: appId });
+  useBackgroundColor({ appId });
   const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
 
   useEffect(() => {

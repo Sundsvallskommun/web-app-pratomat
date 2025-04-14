@@ -36,7 +36,9 @@ function App() {
   });
   return (
     <GuiProvider theme={theme} colorScheme={ColorSchemeMode.Light}>
-      <Suspense fallback="loading">{loaded ? <Main /> : <List />}</Suspense>
+      <Suspense fallback="loading">
+        {loaded ? <Main appId={id} /> : <List />}
+      </Suspense>
     </GuiProvider>
   );
 }
