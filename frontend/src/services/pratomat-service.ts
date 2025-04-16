@@ -18,9 +18,10 @@ export const usePratomat = (
       state.setSubmitText,
     ]);
   const [setSettings] = useAssistantStore((state) => [state.setSettings]);
-
+  const [setBackgroundColor] = useAppStore((state) => [
+    state.setBackgroundColor,
+  ]);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [pratomat, setPratomat] = useState<PublicAssistant>();
 
   useEffect(() => {
     apiService
@@ -39,13 +40,13 @@ export const usePratomat = (
           });
           setStartText(data.startText);
           setSubmitText(data.submitText);
-          setPratomat(data);
+          setBackgroundColor(data.backgroundColor);
           setLoaded(true);
         }
       });
   }, [id]);
 
-  return { loaded, pratomat };
+  return { loaded };
 };
 
 export const usePratomatList = (): {

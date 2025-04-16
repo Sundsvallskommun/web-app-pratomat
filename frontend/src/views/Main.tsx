@@ -1,11 +1,12 @@
 import { useChat } from "@sk-web-gui/ai";
+import { Spinner } from "@sk-web-gui/react";
 import { useEffect, useState } from "react";
 import { useAppStore } from "../hooks/appStore";
 import { Chat } from "./Chat";
 import { Start } from "./Start";
 import { StartTalking } from "./StartTalking";
 import { backgroundClassMap } from "../utils/backgroundClassMap";
-import { useBackgroundColor } from "../hooks/useBackgroundColor";
+import { usePratomat } from "../services/pratomat-service";
 export interface WizardPageProps {
   onNextPage?: (data?: Record<string, string>) => void;
   onPrevPage?: (data?: Record<string, string>) => void;
@@ -21,12 +22,13 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
     state.sessionId,
     state.setSessionId,
   ]);
+
+  const { loaded } = usePratomat(appId);
   const { sendQuery, history, done, newSession, session } = useChat({
     sessionId,
   });
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  useBackgroundColor({ appId });
   const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
 
   useEffect(() => {
@@ -58,6 +60,8 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
       onNextPage={() => setPage(0)}
     />,
   ];
+
+  if (!loaded) return <Spinner />;
 
   return (
     <main
