@@ -65,7 +65,7 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
 
   return (
     <main
-      className={`w-dvw h-dvh portrait:max-h-dvh ${bgClass} text-light-primary`}
+      className={`w-dvw h-dvh portrait:max-h-dvh bg-${bgClass}-surface-primary text-light-primary`}
     >
       {pages[page]}
     </main>

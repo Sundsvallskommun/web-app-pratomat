@@ -9,6 +9,7 @@ import { UserAvatar } from "../components/UserAvatar";
 import { Waves } from "../components/Waves";
 import { WizardPageProps } from "./Main";
 import { useAppStore } from "../hooks/appStore";
+import { backgroundClassMap } from "../utils/backgroundClassMap";
 
 interface ChatProps extends WizardPageProps {
   sessionId: string;
@@ -38,6 +39,18 @@ export const Chat: React.FC<ChatProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation(["chat", "common"]);
+
+  const backgroundColor = useAppStore((state) => state.backgroundColor);
+
+  const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
+
+  const isValidColor =
+    backgroundColor === "vattjom" ||
+    backgroundColor === "gronsta" ||
+    backgroundColor === "bjornstigen" ||
+    backgroundColor === "juniskar";
+
+  const buttonColor = isValidColor ? backgroundColor : "bjornstigen";
 
   const setInputFocus = () => {
     stop();
@@ -165,7 +178,7 @@ export const Chat: React.FC<ChatProps> = ({
             tabIndex={0}
             aria-label={t("common:listen")}
             aria-pressed={listening}
-            className="focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary rounded-button-lg"
+            className={`focus-visible:ring ring-ring ring-offset-${bgClass}-surface-primary rounded-button-lg`}
             size={6}
             animate={!!listening}
             onClick={() => continueTalking()}
@@ -190,7 +203,7 @@ export const Chat: React.FC<ChatProps> = ({
         </form>
         <footer className="w-full max-w-[84rem] grow-0 shrink-0 pb-24 sm:pb-32 md:pb-[4.4rem] px-32 md:px-[17rem] flex flex-col gap-18 sm:gap-24 md:gap-32 items-center">
           <Button
-            color="bjornstigen"
+            color={buttonColor}
             className="underline"
             size="md"
             onClick={() => setShowModal(true)}

@@ -9,6 +9,7 @@ import { Waves } from "../components/Waves";
 import { WizardPageProps } from "./Main";
 import { ArrowLeft, Ellipsis, RefreshCcw } from "lucide-react";
 import { useAppStore } from "../hooks/appStore";
+import { backgroundClassMap } from "../utils/backgroundClassMap";
 
 interface StartTalkingProps extends WizardPageProps {
   history: ChatHistory;
@@ -44,6 +45,11 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
     state.question,
     state.submitText,
   ]);
+
+  const backgroundColor = useAppStore((state) => state.backgroundColor);
+
+  const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
+
   const setInputFocus = () => {
     stop();
     setUseKeyboard(true);
@@ -146,7 +152,7 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
       <div className="absolute top-16 left-16 md:top-[3rem] md:left-[3rem]">
         <button
           type="button"
-          className="bg-transparent border-1 border-light-primary flex justify-center items-center w-32 h-32 sm:w-40 sm:h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary hover:bg-bjornstigen-surface-primary-hover"
+          className={`bg-transparent border-1 border-light-primary flex justify-center items-center w-32 h-32 sm:w-40 sm:h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ring-offset-${bgClass}-surface-primary hover:bg-${bgClass}-surface-primary-hover`}
           aria-label={t("start_talking:back_to_start")}
           onClick={() => onPrevPage && onPrevPage()}
           onFocus={() => setBackFocus(true)}
@@ -197,7 +203,7 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
                   tabIndex={0}
                   aria-label={t("common:listen")}
                   aria-pressed={listening}
-                  className="focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary rounded-button-lg"
+                  className={`focus-visible:ring ring-ring ring-offset-${bgClass}-surface-primary rounded-button-lg`}
                   onClick={() => continueTalking()}
                   size={isMobile ? 6 : 10}
                   animate={!!listening}
