@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RadioButton } from "./RadioButton";
 import { useAppStore } from "../hooks/appStore";
-import { backgroundClassMap } from "../utils/backgroundClassMap";
+import { backgroundVariantMap } from "../utils/backgroundClassMap";
 
 interface FinalModalProps {
   open: boolean;
@@ -26,7 +26,8 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   const { sendQuery, history } = useChat({ sessionId });
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
+  const bgVariantClass =
+    backgroundVariantMap[backgroundColor] ?? "bg-bjornstigen-background-200";
 
   const isValidColor =
     backgroundColor === "vattjom" ||
@@ -67,7 +68,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   return (
     <Modal
       hideClosebutton
-      className={`bg-${bgClass}-background-200 w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] p-32 text-center`}
+      className={`${bgVariantClass} w-full md:w-[61.5rem] my-16 h-full md:h-[62.8rem] p-32 text-center`}
       show={open}
     >
       <form onSubmit={handleSubmit}>

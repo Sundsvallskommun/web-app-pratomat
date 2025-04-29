@@ -29,7 +29,8 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
   });
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
+  const bgClass =
+    backgroundClassMap[backgroundColor] ?? "bg-bjornstigen-surface-primary";
 
   useEffect(() => {
     if (page === 0) {
@@ -65,7 +66,7 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
 
   return (
     <main
-      className={`w-dvw h-dvh portrait:max-h-dvh bg-${bgClass}-surface-primary text-light-primary`}
+      className={`w-dvw h-dvh portrait:max-h-dvh ${bgClass} text-light-primary`}
     >
       {pages[page]}
     </main>

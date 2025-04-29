@@ -9,7 +9,7 @@ import { UserAvatar } from "../components/UserAvatar";
 import { Waves } from "../components/Waves";
 import { WizardPageProps } from "./Main";
 import { useAppStore } from "../hooks/appStore";
-import { backgroundClassMap } from "../utils/backgroundClassMap";
+import { ringOffsetMap } from "../utils/backgroundClassMap";
 
 interface ChatProps extends WizardPageProps {
   sessionId: string;
@@ -42,8 +42,8 @@ export const Chat: React.FC<ChatProps> = ({
 
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const bgClass = backgroundClassMap[backgroundColor] ?? "bjornstigen";
-
+  const ringOffsetClass =
+    ringOffsetMap[backgroundColor] ?? "bg-bjornstigen-surface-primary";
   const isValidColor =
     backgroundColor === "vattjom" ||
     backgroundColor === "gronsta" ||
@@ -178,7 +178,7 @@ export const Chat: React.FC<ChatProps> = ({
             tabIndex={0}
             aria-label={t("common:listen")}
             aria-pressed={listening}
-            className={`focus-visible:ring ring-ring ring-offset-${bgClass}-surface-primary rounded-button-lg`}
+            className={`focus-visible:ring ring-ring ${ringOffsetClass} rounded-button-lg`}
             size={6}
             animate={!!listening}
             onClick={() => continueTalking()}
