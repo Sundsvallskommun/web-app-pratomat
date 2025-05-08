@@ -1,6 +1,9 @@
 import { HttpException } from '@/exceptions/HttpException';
 import ApiResponse from '@/interfaces/api-service.interface';
+import { PublicAssistant } from '@/interfaces/assistant.interface';
 import { RequestWithUser } from '@/interfaces/auth.interface';
+import { getValidColor } from '@/utils/color-checker';
+import { generateHash } from '@/utils/create-hash';
 import prisma from '@/utils/prisma';
 import { Response } from 'express';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UseBefore } from 'routing-controllers';
@@ -14,7 +17,6 @@ import {
   PublicAssistantsApiResponse,
   UpdateAssistant,
 } from '../responses/assistant.response';
-import { generateHash } from '@/utils/create-hash';
 
 @Controller()
 export class AssistantsController {
@@ -64,9 +66,10 @@ export class AssistantsController {
           },
         },
       });
+      const { backgroundColor, ...rest } = assistant;
       const hash = generateHash('', assistant.assistantId, assistant.app);
-
-      return response.send({ data: { ...assistant, hash }, message: 'success' });
+      const data: PublicAssistant = { ...rest, backgroundColor: getValidColor(backgroundColor), hash };
+      return response.send({ data, message: 'success' });
     } catch {
       throw new HttpException(404, 'Not found');
     }
@@ -146,6 +149,7 @@ export class AssistantsController {
     const assistant = await prisma.assistant.create({
       data: {
         ...body,
+        backgroundColor: getValidColor(body.backgroundColor),
         finalQuestions: {
           create: body.finalQuestions.map(finalQuestion => ({
             question: finalQuestion.question,
@@ -202,6 +206,7 @@ export class AssistantsController {
         where: { id },
         data: {
           ...body,
+          backgroundColor: body.backgroundColor ? getValidColor(body.backgroundColor) : undefined,
           updatedAt: new Date(),
           finalQuestions: body.finalQuestions
             ? {
