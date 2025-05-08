@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RadioButton } from "./RadioButton";
 import { useAppStore } from "../hooks/appStore";
-import { backgroundVariantMap } from "../utils/backgroundClassMap";
+import { bg200Map } from "../utils/backgroundClassMap";
 
 interface FinalModalProps {
   open: boolean;
@@ -26,16 +26,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   const { sendQuery, history } = useChat({ sessionId });
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const bgVariantClass =
-    backgroundVariantMap[backgroundColor] ?? "bg-bjornstigen-background-200";
-
-  const isValidColor =
-    backgroundColor === "vattjom" ||
-    backgroundColor === "gronsta" ||
-    backgroundColor === "bjornstigen" ||
-    backgroundColor === "juniskar";
-
-  const buttonColor = isValidColor ? backgroundColor : "bjornstigen";
+  const bgVariantClass = bg200Map[backgroundColor];
 
   const [selected, setSelected] = useState<Record<number, string>>({});
 
@@ -107,7 +98,7 @@ export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
               disabled={!isValid || sent}
               rounded
               type="submit"
-              color={buttonColor}
+              color={backgroundColor}
             >
               {upperFirst(t("final:send_and_exit"))}
             </Button>

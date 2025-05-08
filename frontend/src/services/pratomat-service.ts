@@ -5,7 +5,7 @@ import { ApiResponse, apiService } from "./api-service";
 import {
   PublicAssistant,
   PublicAssistantSummary,
-} from "../interfaces/assistant.interface";
+} from "../data-contracts/backend/data-contracts";
 
 export const usePratomat = (
   id: number | string
@@ -40,7 +40,7 @@ export const usePratomat = (
           });
           setStartText(data.startText);
           setSubmitText(data.submitText);
-          setBackgroundColor(data.backgroundColor);
+          setBackgroundColor(data.backgroundColor ?? "bjornstigen");
           setLoaded(true);
         }
       });

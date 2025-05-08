@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, forwardRef } from "react";
 import { useAppStore } from "../hooks/appStore";
-import { hoverMap, ringOffsetMap } from "../utils/backgroundClassMap";
+import { bgHoverMap, ringOffsetMap } from "../utils/backgroundClassMap";
 
 export const SmallButton = forwardRef<
   HTMLButtonElement,
@@ -8,10 +8,9 @@ export const SmallButton = forwardRef<
 >((props, ref) => {
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const hoverClass =
-    hoverMap[backgroundColor] ?? "hover:bg-bjornstigen-surface-primary-hover";
-  const ringOffsetClass =
-    ringOffsetMap[backgroundColor] ?? "bg-bjornstigen-surface-primary";
+  const hoverClass = bgHoverMap[backgroundColor];
+  const ringOffsetClass = ringOffsetMap[backgroundColor];
+
   return (
     <button
       ref={ref}

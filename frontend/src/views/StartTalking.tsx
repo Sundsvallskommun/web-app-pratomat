@@ -1,5 +1,12 @@
 import { ChatHistory, useSpeechToText } from "@sk-web-gui/ai";
-import { Button, Icon, Tooltip, useGui, useSnackbar } from "@sk-web-gui/react";
+import {
+  Button,
+  cx,
+  Icon,
+  Tooltip,
+  useGui,
+  useSnackbar,
+} from "@sk-web-gui/react";
 import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "usehooks-ts";
@@ -9,7 +16,11 @@ import { Waves } from "../components/Waves";
 import { WizardPageProps } from "./Main";
 import { ArrowLeft, Ellipsis, RefreshCcw } from "lucide-react";
 import { useAppStore } from "../hooks/appStore";
-import { hoverMap, ringOffsetMap } from "../utils/backgroundClassMap";
+import {
+  bgHoverMap,
+  ringOffsetMap,
+  textSecondaryMap,
+} from "../utils/backgroundClassMap";
 
 interface StartTalkingProps extends WizardPageProps {
   history: ChatHistory;
@@ -48,11 +59,9 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
 
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const ringOffsetClass =
-    ringOffsetMap[backgroundColor] ?? "bg-bjornstigen-surface-primary";
-  const hoverClass =
-    hoverMap[backgroundColor] ?? "hover:bg-bjornstigen-surface-primary-hover";
-
+  const ringOffsetClass = ringOffsetMap[backgroundColor];
+  const hoverClass = bgHoverMap[backgroundColor];
+  const textColor = textSecondaryMap[backgroundColor];
   const setInputFocus = () => {
     stop();
     setUseKeyboard(true);
@@ -155,7 +164,11 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
       <div className="absolute top-16 left-16 md:top-[3rem] md:left-[3rem]">
         <button
           type="button"
-          className={`bg-transparent border-1 border-light-primary flex justify-center items-center w-32 h-32 sm:w-40 sm:h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring ${ringOffsetClass} ${hoverClass}`}
+          className={cx(
+            "bg-transparent border-1 border-light-primary flex justify-center items-center w-32 h-32 sm:w-40 sm:h-40 md:w-[5.2rem] md:h-[5.2rem] rounded-full focus-visible:ring ring-ring",
+            ringOffsetClass,
+            hoverClass
+          )}
           aria-label={t("start_talking:back_to_start")}
           onClick={() => onPrevPage && onPrevPage()}
           onFocus={() => setBackFocus(true)}
@@ -163,7 +176,7 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
           onMouseEnter={() => setBackHover(true)}
           onMouseLeave={() => setBackHover(false)}
         >
-          <Icon icon={<ArrowLeft />} className="text-light-secondary" />
+          <Icon icon={<ArrowLeft />} className={cx(textColor)} />
         </button>
 
         <Tooltip
@@ -183,7 +196,10 @@ export const StartTalking: React.FC<StartTalkingProps> = ({
         <div className="flex flex-col items-center justify-start px-32 md:px-[10rem] pt-[6rem] text-center grow-0 portrait:shrink landscape:shrink-0 overflow-hidden">
           <h1 className="sr-only">{t("common:pratomaten")}</h1>
           <label
-            className="mb-16 sm:mb-32 md:mb-[10rem] text-light-secondary text-large sm:text-h1 font-display font-extrabold grow-0 portrait:shrink landscape:shrink-0"
+            className={cx(
+              "mb-16 sm:mb-32 md:mb-[10rem] text-large sm:text-h1 font-display font-extrabold grow-0 portrait:shrink landscape:shrink-0",
+              textColor
+            )}
             id="mainlabel"
           >
             {question}

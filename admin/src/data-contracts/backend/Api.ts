@@ -67,6 +67,34 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags Assistants
+   * @name AssistantsControllerGetPublicAssistants
+   * @summary Get a list of public assistants
+   * @request GET:/api/assistants/public/all
+   */
+  assistantsControllerGetPublicAssistants = (params: RequestParams = {}) =>
+    this.request<PublicAssistantsApiResponse, any>({
+      path: `/api/assistants/public/all`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Assistants
+   * @name AssistantsControllerGetPublicAssistant
+   * @summary Get a public assistant
+   * @request GET:/api/assistants/public/{app}
+   */
+  assistantsControllerGetPublicAssistant = (app: string, params: RequestParams = {}) =>
+    this.request<PublicAssistantApiResponse, any>({
+      path: `/api/assistants/public/${app}`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Assistants
    * @name AssistantsControllerGetMany
    * @summary Get all assistants
    * @request GET:/api/assistants
@@ -135,34 +163,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<void, any>({
       path: `/api/assistants/${id}`,
       method: 'DELETE',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Assistants
-   * @name AssistantsControllerGetPublicAssistants
-   * @summary Get a list of public assistants
-   * @request GET:/api/assistants/public/all
-   */
-  assistantsControllerGetPublicAssistants = (params: RequestParams = {}) =>
-    this.request<PublicAssistantsApiResponse, any>({
-      path: `/api/assistants/public/all`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Assistants
-   * @name AssistantsControllerGetPublicAssistant
-   * @summary Get a public assistant
-   * @request GET:/api/assistants/public/{app}
-   */
-  assistantsControllerGetPublicAssistant = (app: string, params: RequestParams = {}) =>
-    this.request<PublicAssistantApiResponse, any>({
-      path: `/api/assistants/public/${app}`,
-      method: 'GET',
       ...params,
     });
 }

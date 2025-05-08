@@ -94,7 +94,7 @@ export interface PublicAssistant {
   submitText: string;
   finalQuestions: FinalQuestion[];
   hash: string;
-  backgroundColor: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
+  backgroundColor: "vattjom" | "gronsta" | "bjornstigen" | "juniskar";
 }
 
 export interface PublicAssistantSummary {
@@ -112,7 +112,7 @@ export interface CreateAssistant {
   submitText: string;
   published?: boolean;
   finalQuestions: CreateFinalQuestion[];
-  backgroundColor: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
+  backgroundColor: "vattjom" | "gronsta" | "bjornstigen" | "juniskar";
 }
 
 export interface UpdateAssistant {
@@ -124,7 +124,7 @@ export interface UpdateAssistant {
   submitText?: string;
   published?: boolean;
   finalQuestions?: UpdateFinalQuestion[];
-  backgroundColor?: 'vattjom' | 'gronsta' | 'bjornstigen' | 'juniskar';
+  backgroundColor?: "vattjom" | "gronsta" | "bjornstigen" | "juniskar";
 }
 
 export interface PublicAssistantApiResponse {

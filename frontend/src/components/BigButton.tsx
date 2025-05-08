@@ -7,8 +7,8 @@ export const BigButton = forwardRef<
   ComponentPropsWithoutRef<"button">
 >((props, ref) => {
   const backgroundColor = useAppStore((state) => state.backgroundColor);
-  const ringOffsetClass =
-    ringOffsetMap[backgroundColor] ?? "bg-bjornstigen-surface-primary";
+  const ringOffsetClass = ringOffsetMap[backgroundColor];
+
   return (
     <button
       ref={ref}

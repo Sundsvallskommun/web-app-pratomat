@@ -1,12 +1,12 @@
 import { useChat } from "@sk-web-gui/ai";
-import { Spinner } from "@sk-web-gui/react";
+import { cx, Spinner } from "@sk-web-gui/react";
 import { useEffect, useState } from "react";
 import { useAppStore } from "../hooks/appStore";
 import { Chat } from "./Chat";
 import { Start } from "./Start";
 import { StartTalking } from "./StartTalking";
-import { backgroundClassMap } from "../utils/backgroundClassMap";
 import { usePratomat } from "../services/pratomat-service";
+import { bgSurfacePrimaryMap } from "../utils/backgroundClassMap";
 export interface WizardPageProps {
   onNextPage?: (data?: Record<string, string>) => void;
   onPrevPage?: (data?: Record<string, string>) => void;
@@ -29,8 +29,7 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
   });
   const backgroundColor = useAppStore((state) => state.backgroundColor);
 
-  const bgClass =
-    backgroundClassMap[backgroundColor] ?? "bg-bjornstigen-surface-primary";
+  const bgClass = bgSurfacePrimaryMap[backgroundColor];
 
   useEffect(() => {
     if (page === 0) {
@@ -66,7 +65,10 @@ export const Main: React.FC<MainProps> = ({ appId }) => {
 
   return (
     <main
-      className={`w-dvw h-dvh portrait:max-h-dvh ${bgClass} text-light-primary`}
+      className={cx(
+        "w-dvw h-dvh portrait:max-h-dvh text-light-primary",
+        bgClass
+      )}
     >
       {pages[page]}
     </main>
