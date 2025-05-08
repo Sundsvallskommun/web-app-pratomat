@@ -8,6 +8,7 @@ export type Assistant = {
   submitText: string;
   finalQuestions?: FinalQuestion[];
   published: boolean;
+  backgroundColor?: BackgroundColor;
   updatedAt: Date;
   createdAt: Date;
 };
@@ -20,6 +21,7 @@ export type PublicAssistant = {
   submitText: string;
   finalQuestions: FinalQuestion[];
   hash: string;
+  backgroundColor: BackgroundColor;
 };
 
 export type PublicAssistantSummary = {
