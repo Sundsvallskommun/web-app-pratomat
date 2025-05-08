@@ -1,17 +1,3 @@
-import { FinalQuestion } from "./final-question.interface";
+import { PublicAssistant } from "../data-contracts/backend/data-contracts";
 
-export type PublicAssistant = {
-  app: string;
-  assistantId: string;
-  question: string;
-  startText: string;
-  submitText: string;
-  finalQuestions: FinalQuestion[];
-  hash: string;
-};
-
-export type PublicAssistantSummary = {
-  app: string;
-  name: string;
-  question: string;
-};
+export type Color = PublicAssistant["backgroundColor"];

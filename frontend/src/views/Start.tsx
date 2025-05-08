@@ -3,6 +3,8 @@ import { BigButton } from "../components/BigButton";
 import { Waves } from "../components/Waves";
 import { useAppStore } from "../hooks/appStore";
 import { WizardPageProps } from "./Main";
+import { textSecondaryMap } from "../utils/backgroundClassMap";
+import { cx } from "@sk-web-gui/react";
 
 export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
   const [winWidth, setWinWidth] = useState<number>(window.innerWidth);
@@ -10,6 +12,10 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
     state.question,
     state.startText,
   ]);
+
+  const color = useAppStore((state) => state.backgroundColor);
+  const textColor = textSecondaryMap[color];
+
   useEffect(() => {
     const updateWidth = () => {
       setWinWidth(window.innerWidth);
@@ -31,7 +37,12 @@ export const Start: React.FC<WizardPageProps> = ({ onNextPage }) => {
   return (
     <div className="relative w-full h-full landscape:overflow-auto">
       <div className="relative flex flex-col gap-[6rem] px-32 md:px-[10rem] pt-[14%] landscape:pt-[8%] pb-64 text-center items-center justify-start z-10">
-        <h1 className="text-h3 sm:text-h1 md:text-display-2 text-light-secondary font-header font-extrabold">
+        <h1
+          className={cx(
+            "text-h3 sm:text-h1 md:text-display-2 font-header font-extrabold",
+            textColor
+          )}
+        >
           {question}
         </h1>
         <BigButton onClick={() => onNextPage && onNextPage()}>

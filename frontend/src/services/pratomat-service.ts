@@ -5,9 +5,11 @@ import { ApiResponse, apiService } from "./api-service";
 import {
   PublicAssistant,
   PublicAssistantSummary,
-} from "../interfaces/assistant.interface";
+} from "../data-contracts/backend/data-contracts";
 
-export const usePratomat = (id: number | string): { loaded: boolean } => {
+export const usePratomat = (
+  id: number | string
+): { loaded: boolean; pratomat?: PublicAssistant } => {
   const [setQuestion, setFinalQuestions, setStartText, setSubmitText] =
     useAppStore((state) => [
       state.setQuestion,
@@ -16,26 +18,29 @@ export const usePratomat = (id: number | string): { loaded: boolean } => {
       state.setSubmitText,
     ]);
   const [setSettings] = useAssistantStore((state) => [state.setSettings]);
-
+  const [setBackgroundColor] = useAppStore((state) => [
+    state.setBackgroundColor,
+  ]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     apiService
       .get<ApiResponse<PublicAssistant>>(`/assistants/public/${id}`)
       .then((res) => {
-        const pratomat = res?.data?.data;
+        const data = res?.data?.data;
 
-        if (pratomat) {
-          setQuestion(pratomat.question);
-          setFinalQuestions(pratomat.finalQuestions);
+        if (data) {
+          setQuestion(data.question);
+          setFinalQuestions(data.finalQuestions);
           setSettings({
-            app: pratomat.app,
-            assistantId: pratomat.assistantId,
-            hash: pratomat.hash,
+            app: data.app,
+            assistantId: data.assistantId,
+            hash: data.hash,
             user: "",
           });
-          setStartText(pratomat.startText);
-          setSubmitText(pratomat.submitText);
+          setStartText(data.startText);
+          setSubmitText(data.submitText);
+          setBackgroundColor(data.backgroundColor ?? "bjornstigen");
           setLoaded(true);
         }
       });

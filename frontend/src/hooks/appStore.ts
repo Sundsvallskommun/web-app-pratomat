@@ -1,6 +1,7 @@
 import { createJSONStorage, persist } from "zustand/middleware";
 import { createWithEqualityFn } from "zustand/traditional";
-import { FinalQuestion } from "../interfaces/final-question.interface";
+import { FinalQuestion } from "../data-contracts/backend/data-contracts";
+import { Color } from "../interfaces/assistant.interface";
 
 interface AppStore {
   sessionId: string;
@@ -13,6 +14,8 @@ interface AppStore {
   setStartText: (startText: string) => void;
   submitText?: string;
   setSubmitText: (submitText: string) => void;
+  backgroundColor: Color;
+  setBackgroundColor: (color: Color) => void;
 }
 
 export const useAppStore = createWithEqualityFn(
@@ -28,6 +31,8 @@ export const useAppStore = createWithEqualityFn(
       setStartText: (startText) => set(() => ({ startText })),
       submitText: undefined,
       setSubmitText: (submitText) => set(() => ({ submitText })),
+      backgroundColor: "bjornstigen",
+      setBackgroundColor: (color) => set(() => ({ backgroundColor: color })),
     }),
     {
       name: import.meta.env.VITE_APPLICATION,

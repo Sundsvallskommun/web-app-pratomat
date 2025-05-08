@@ -1,5 +1,5 @@
-import { AIFeed, ChatHistory, useSpeechToText } from "@sk-web-gui/ai";
-import { Button } from "@sk-web-gui/react";
+import { AIFeed, useSpeechToText } from "@sk-web-gui/ai";
+import { Button, cx } from "@sk-web-gui/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AssistantAvatar } from "../components/AssistantAvatar";
@@ -9,10 +9,12 @@ import { UserAvatar } from "../components/UserAvatar";
 import { Waves } from "../components/Waves";
 import { WizardPageProps } from "./Main";
 import { useAppStore } from "../hooks/appStore";
+import { ringOffsetMap, textSecondaryMap } from "../utils/backgroundClassMap";
+import { text } from "stream/consumers";
 
 interface ChatProps extends WizardPageProps {
   sessionId: string;
-  history: ChatHistory;
+  history: any[];
   sendQuery: (query: string) => void;
 }
 
@@ -38,6 +40,11 @@ export const Chat: React.FC<ChatProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation(["chat", "common"]);
+
+  const backgroundColor = useAppStore((state) => state.backgroundColor);
+
+  const ringOffsetClass = ringOffsetMap[backgroundColor];
+  const textColor = textSecondaryMap[backgroundColor];
 
   const setInputFocus = () => {
     stop();
@@ -128,7 +135,12 @@ export const Chat: React.FC<ChatProps> = ({
         style={{ maxHeight: isWriting ? winHeight : "100%" }}
       >
         <div className="max-w-content mt-48 mb-48">
-          <h1 className="text-h1-sm md:text-h1-md xl:text-h1-lg text-purple-200 text-center">
+          <h1
+            className={cx(
+              "text-h1-sm md:text-h1-md xl:text-h1-lg text-center",
+              textColor
+            )}
+          >
             {question}
           </h1>
         </div>
@@ -165,7 +177,10 @@ export const Chat: React.FC<ChatProps> = ({
             tabIndex={0}
             aria-label={t("common:listen")}
             aria-pressed={listening}
-            className="focus-visible:ring ring-ring ring-offset-bjornstigen-surface-primary rounded-button-lg"
+            className={cx(
+              "focus-visible:ring ring-ring rounded-button-lg",
+              ringOffsetClass
+            )}
             size={6}
             animate={!!listening}
             onClick={() => continueTalking()}
@@ -190,7 +205,7 @@ export const Chat: React.FC<ChatProps> = ({
         </form>
         <footer className="w-full max-w-[84rem] grow-0 shrink-0 pb-24 sm:pb-32 md:pb-[4.4rem] px-32 md:px-[17rem] flex flex-col gap-18 sm:gap-24 md:gap-32 items-center">
           <Button
-            color="bjornstigen"
+            color={backgroundColor}
             className="underline"
             size="md"
             onClick={() => setShowModal(true)}

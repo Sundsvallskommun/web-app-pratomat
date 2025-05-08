@@ -112,6 +112,8 @@ export class PublicAssistant implements PublicAssistantType {
   finalQuestions: FinalQuestion[];
   @IsString()
   hash: string;
+  @IsEnum(BackgroundColor)
+  backgroundColor: BackgroundColor;
 }
 export class PublicAssistantSummary implements PublicAssistantSummaryType {
   @IsString()
@@ -141,7 +143,6 @@ export class CreateAssistant implements Omit<AssistantType, 'id' | 'createdAt' |
   @ValidateNested({ each: true })
   @Type(() => CreateFinalQuestion)
   finalQuestions: CreateFinalQuestion[];
-
   @IsEnum(BackgroundColor)
   backgroundColor: BackgroundColor;
 }
