@@ -12,20 +12,14 @@ interface FinalModalProps {
   onClose: () => void;
 }
 
-// const genders = ["woman", "man", "none", "noanswer"];
-
-// const ages = ["below 20", "20-30", "30-45", "45-70", "above 70"];
-
 export const FinalModal: React.FC<FinalModalProps> = ({ open, onClose }) => {
   const finalQuestions = useAppStore((state) => state.finalQuestions);
-  // const [pickedGender, setPickedGender] = useState<string>("");
-  // const [pickedAge, setPickedAge] = useState<string>("");
   const sessionId = useAppStore((state) => state.sessionId);
   const [sent, setSent] = useState<boolean>(false);
   const { t } = useTranslation(["common", "final"]);
   const { sendQuery, history } = useChat({ sessionId });
-  const backgroundColor = useAppStore((state) => state.backgroundColor);
 
+  const backgroundColor = useAppStore((state) => state.backgroundColor);
   const bgVariantClass = bg200Map[backgroundColor];
 
   const [selected, setSelected] = useState<Record<number, string>>({});
